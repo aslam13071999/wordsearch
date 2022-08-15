@@ -15,13 +15,15 @@ export default class GameBoard extends React.Component {
         this.left_margin = 32
         this.top_margin = 32
 
+
         this.state = {
             board_created: false,
-            board_size_x: 6,
-            board_size_y: 6,
-            data: null,
-            category_selected: true,
-            category: 'default'
+            board_size: 6,
+            difficulty_selected: this.props.difficulty_selected || false,
+            difficulty: this.props.difficulty || 2,
+            category_selected: this.props.category_selected || false,
+            category: 'default',
+            board_data: null,
         }
     }
 
