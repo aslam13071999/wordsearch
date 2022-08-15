@@ -3,35 +3,34 @@ import {MemberList} from "../member-list/member-list";
 import {Notifications} from "../notifications/notifications";
 
 import GameBoard from '../game-board/game-board'
-import './room.css'
+import './room-view.css'
 import {RoomApi} from "../../services/room-api";
 import {AuthenticationService} from "../../services/authentication";
 
-export class Room extends React.Component {
+export class RoomView extends React.Component {
 
     constructor(props) {
         super(props);
         this.room_api = new RoomApi()
         this.state = {
-            room_id: null
+            room_id:  null
         }
     }
 
     loginUser = async () => {
-        console.log("Room.loginUser")
+        console.log("RoomView.loginUser")
         await new AuthenticationService().authenticate('asif', 'rgukt123')
     }
 
     createRoom = async () => {
         await this.loginUser()
-        console.log("Room.createRoom")
+        console.log("RoomView.createRoom")
         const response = await this.room_api.createRoom()
         const room_id = response.data.id
         this.setState({room_id: room_id})
     }
 
     componentDidMount = async () => {
-        console.log("Room.componentDidMount")
         await this.createRoom()
     }
 

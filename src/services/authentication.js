@@ -47,8 +47,7 @@ export class AuthenticationService {
     getAuthHeaders = async () => {
         const access_token = await this.getAccessToken()
         return {
-            "Authorization": access_token,
-            "Bypass-Tunnel-Reminder": "asd"
+            "Authorization": "Bearer " + access_token,
         }
     }
 }

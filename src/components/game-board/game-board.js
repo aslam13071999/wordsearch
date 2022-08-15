@@ -20,7 +20,8 @@ export default class GameBoard extends React.Component {
 
         this.state = {
             board_created: false,
-            board_size: 6,
+            board_id: this.props.board_id || null,
+            board_size: this.props.board_size || 2,
             difficulty_selected: this.props.difficulty_selected || false,
             difficulty: this.props.difficulty || 2,
             category_selected: this.props.category_selected || false,
@@ -43,17 +44,19 @@ export default class GameBoard extends React.Component {
 
 
     createBoard = async () => {
+        if(this.props.board_id != null) return
         const response = await this.game_board_api.createBoard(
             this.props.room_id,
             'default',
             this.state.board_size,
             this.state.difficulty
         )
+        const board_id = response.data.id
         this.setState({
-            board_created: true
+            board_created: true,
+            board_id: board_id
         })
-        const response2 = await this.getCategories()
-        console.log(response2)
+        await this.getCategories()
     }
 
     getCategories = async () => {
@@ -89,9 +92,10 @@ export default class GameBoard extends React.Component {
                     this.state.board_created === false &&
                     <div style={{padding: "10px"}}>
                         Board Size: &nbsp;
-                        <input type={"number"} onChange={this.changeBoardSize} value={this.state.board_size_x}
+                        <input type={"number"} onChange={this.changeBoardSize} value={this.state.board_size}
                                style={{width: "60px"}}/>
-                        <button onClick={this.createBoard}> Create Board</button>
+                        <button className={"bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"}
+                                onClick={this.createBoard}> Create Board</button>
                     </div>
                 }
                 {

@@ -1,6 +1,6 @@
 
 export class ApiConfig{
-    static API_URL = "https://easy-points-smell-124-123-171-72.loca.lt"
+    static API_URL = "http://localhost:8000"
     static ROOM_CREATE_URL = ApiConfig.API_URL + "/word-search/room/"
     static ROOM_JOIN_URL = ApiConfig.API_URL + "/word-search/room/{0}/join/"
     static ROOM_DELETE_URL = ApiConfig.API_URL + "/word-search/room/{0}/"
