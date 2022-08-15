@@ -7,8 +7,7 @@ export class RoomApi {
 
     createRoom = async () => {
         const url = ApiConfig.ROOM_CREATE_URL
-        const access_token = await new AuthenticationService().getAccessToken()
-        const headers = {'Authorization': "Bearer " + access_token }
+        const headers = await new AuthenticationService().getAuthHeaders()
         const response = await axios.post(url, {}, {headers: headers})
         console.log("room.createRoom response", response)
         return response
@@ -16,15 +15,17 @@ export class RoomApi {
 
     join = async (roomId) => {
         const url = ApiConfig.ROOM_JOIN_URL.format(roomId)
-        const response = await axios.get(url, {})
+        const headers = await new AuthenticationService().getAuthHeaders()
+        const response = await axios.get(url, {headers: headers})
         console.log("room.join response")
         console.log(response)
         return response
     }
 
     deleteRoom = async (roomId) => {
+        const headers = await new AuthenticationService().getAuthHeaders()
         const url = ApiConfig.ROOM_DELETE_URL.format(roomId)
-        const response = await axios.delete(url, {})
+        const response = await axios.delete(url, {headers: headers})
         console.log("room.deleteRoom response")
         console.log(response)
         return response
@@ -32,7 +33,8 @@ export class RoomApi {
 
     getRoomInfo = async (roomId) => {
         const url = ApiConfig.ROOM_INFO_URL.format(roomId)
-        const response = await axios.get(url, {})
+        const headers = await new AuthenticationService().getAuthHeaders()
+        const response = await axios.get(url, {headers: headers})
         console.log("room.getRoomInfo response")
         console.log(response)
         return response

@@ -7,8 +7,7 @@ export class GameBoardApi{
 
     createBoard = async (roomId, category, board_size, difficulty) => {
         const url = ApiConfig.GAME_BOARD_CREATE_URL
-        const access_token = await new AuthenticationService().getAccessToken()
-        const headers = {'Authorization': "Bearer " + access_token }
+        const headers = await new AuthenticationService().getAuthHeaders()
         const response = await axios.post(url,
             {
                 "room_id": roomId,

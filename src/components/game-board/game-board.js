@@ -52,8 +52,8 @@ export default class GameBoard extends React.Component {
         this.setState({
             board_created: true
         })
-        await this.getCategories()
-        console.log(response)
+        const response2 = await this.getCategories()
+        console.log(response2)
     }
 
     getCategories = async () => {
