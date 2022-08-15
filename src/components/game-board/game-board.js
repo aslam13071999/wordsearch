@@ -2,6 +2,7 @@ import React from 'react'
 import GridService from '../../services/grid-service.js'
 import './game-board.css'
 import {GameBoardApi} from "../../services/game-board-api";
+import {CategoryApi} from "../../services/category-api";
 
 export default class GameBoard extends React.Component {
     constructor(props) {
@@ -9,6 +10,7 @@ export default class GameBoard extends React.Component {
         this.room_id = this.props.room_id;
         this.grid_service = new GridService()
         this.game_board_api = new GameBoardApi()
+        this.category_api = new CategoryApi()
 
         this.cell_size = 16
         this.space_between = 20
@@ -45,14 +47,22 @@ export default class GameBoard extends React.Component {
             this.props.room_id,
             'default',
             this.state.board_size,
+            this.state.difficulty
         )
         this.setState({
             board_created: true
         })
+        await this.getCategories()
+        console.log(response)
+    }
+
+    getCategories = async () => {
+        const response = await this.category_api.listCategories()
         console.log(response)
     }
 
     componentDidMount = () => {
+
     }
 
 
@@ -77,10 +87,11 @@ export default class GameBoard extends React.Component {
             <div>
                 {
                     this.state.board_created === false &&
-                    <div style={{ padding: "10px"}}>
+                    <div style={{padding: "10px"}}>
                         Board Size: &nbsp;
-                        <input type={"number"} onChange={this.changeBoardSize} value={this.state.board_size_x} style={{ width: "60px"}} />
-                        <button onClick={this.createBoard} > Create Board </button>
+                        <input type={"number"} onChange={this.changeBoardSize} value={this.state.board_size_x}
+                               style={{width: "60px"}}/>
+                        <button onClick={this.createBoard}> Create Board</button>
                     </div>
                 }
                 {
