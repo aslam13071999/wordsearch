@@ -1,0 +1,51 @@
+@media screen and (min-width: 0px) {
+    .game-board {
+        display: grid;
+        grid-template-columns: 1fr;
+        grid-template-rows: 1fr 1fr 1fr;
+        height: 100%;
+        width: 100vw;
+    }
+
+    .canvas {
+        height: 95vh;
+        width: 95vw;
+        padding: 2vh 2vw;
+    }
+
+    .dictionary {
+        height: 100%;
+    }
+
+    .placeholder{
+        height: 100%;
+    }
+}
+
+@media screen and (min-width: 600px) {
+    .game-board {
+        display: grid;
+        grid-template-columns: 3fr 1fr;
+        grid-template-rows: 2fr 1fr;
+        height: 100vh;
+        width: 100vw;
+    }
+
+    .canvas {
+        grid-column: 1 ;
+        grid-row: 1 / span 2;
+        height: 100%;
+        width: 100%;
+    }
+
+    .dictionary {
+        grid-column: 2 / span 1;
+        grid-row: 1 / span 1;
+    }
+
+    .placeholder {
+        grid-column: 2 / span 1;
+        grid-row: 2 / span 1;
+    }
+}
+

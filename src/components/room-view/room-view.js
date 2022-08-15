@@ -40,7 +40,7 @@ class RoomView extends React.Component {
                 <div className="game-board">
                     {
                         this.state.latest_board == null &&
-                        <CreateGameBoard room_id={this.room_id} />
+                        <CreateGameBoard room_id={this.room_id}/>
                     }
                     {
                         this.state.latest_board != null &&
@@ -54,9 +54,12 @@ class RoomView extends React.Component {
                 <div className="member-list">
                     <MemberList room_id={this.room_id}></MemberList>
                 </div>
-                <div className="notifications">
-                    <Notifications room_id={this.room_id}></Notifications>
-                </div>
+
+                {/*needs to replace this with scorecard here*/}
+                {/*<div className="notifications">*/}
+                {/*    <Notifications room_id={this.room_id}></Notifications>*/}
+                {/*</div>*/}
+
             </div>
         )
     }
