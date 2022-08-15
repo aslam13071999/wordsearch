@@ -1,20 +1,23 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
-import App from './App';
 import {BrowserRouter, Route, Routes} from "react-router-dom";
 import reportWebVitals from './reportWebVitals';
-import {RoomView} from "./components/room-view/room-view";
-import CategoryList from "./components/categories_list/categories-list";
+
+import App from './App';
+import CategoryList from "./components/categories-list/categories-list";
+import RoomListView from "./components/room-list-view/room-list-view";
+import RoomView from "./components/room-view/room-view";
+
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
     <BrowserRouter>
         <Routes>
-            <Route path="/" element={<App />} />
-            <Route path="/room"  element={<RoomView />}>
-            </Route>
-            <Route path="/categories" element={<CategoryList />} />
+            <Route path="/" element={<App/>}/>
+            <Route path="/room" element={<RoomListView/>}/>
+            <Route path="/room/:id" element={<RoomView/>}/>
+            <Route path="/categories" element={<CategoryList/>}/>
         </Routes>
     </BrowserRouter>
 );

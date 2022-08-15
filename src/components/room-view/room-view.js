@@ -2,64 +2,65 @@ import React from "react";
 import {MemberList} from "../member-list/member-list";
 import {Notifications} from "../notifications/notifications";
 
-import GameBoard from '../game-board/game-board'
-import './room-view.css'
-import {RoomApi} from "../../services/room-api";
-import {AuthenticationService} from "../../services/authentication";
+import {GameBoardView} from "../game-board-view/game-board-view";
 
-export class RoomView extends React.Component {
+import './room-view.css'
+import withRouter from "../../routerUtil";
+import {GameBoardApi} from "../../services/game-board-api";
+import CreateGameBoard from "../create-game-board/create-game-board";
+
+
+class RoomView extends React.Component {
 
     constructor(props) {
-        super(props);
-        this.room_api = new RoomApi()
+        super(props)
+        this.room_id = this.props.router.params.id
+        this.gameboard_api = new GameBoardApi()
         this.state = {
-            room_id:  null
+            latest_board: null
         }
     }
 
-    loginUser = async () => {
-        console.log("RoomView.loginUser")
-        await new AuthenticationService().authenticate('asif', 'rgukt123')
-    }
-
-    createRoom = async () => {
-        await this.loginUser()
-        console.log("RoomView.createRoom")
-        const response = await this.room_api.createRoom()
-        const room_id = response.data.id
-        this.setState({room_id: room_id})
+    getActiveBoard = async () => {
+        const response = await this.gameboard_api.getLatestBoard(this.room_id)
+        this.setState({
+            latest_board: response.data
+        })
+        console.log(response)
     }
 
     componentDidMount = async () => {
-        await this.createRoom()
+        await this.getActiveBoard()
     }
 
 
     render() {
         return (
-            <div>
-                {
-                    this.state.room_id == null &&
-                    <div className="createRoomSection">
-                        Room is under creation, please hold on
-                    </div>
-                }
-                {
-                    this.state.room_id != null &&
-                    <div className="room">
-                        <div className="game-board">
-                            <GameBoard room_id={this.state.room_id} grid_size={10}></GameBoard>
-                        </div>
-                        <div className="member-list">
-                            <MemberList room_id={this.state.room_id}></MemberList>
-                        </div>
-                        <div className="notifications">
-                            <Notifications room_id={this.state.room_id}></Notifications>
-                        </div>
-                    </div>
-                }
+            <div className="room">
+                <div className="game-board">
+                    {
+                        this.state.latest_board == null &&
+                        <CreateGameBoard room_id={this.room_id} />
+                    }
+                    {
+                        this.state.latest_board != null &&
+                        <GameBoardView room_id={this.room_id}
+                                       board_data={this.state.latest_board.board_data}
+                                       board_dictionary={this.state.latest_board.board_dictionary}
+                                       board_id={this.state.latest_board.id}
+                        />
+                    }
+                </div>
+                <div className="member-list">
+                    <MemberList room_id={this.room_id}></MemberList>
+                </div>
+                <div className="notifications">
+                    <Notifications room_id={this.room_id}></Notifications>
+                </div>
             </div>
         )
     }
 
 }
+
+export default withRouter(RoomView)

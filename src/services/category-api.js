@@ -10,6 +10,7 @@ export class CategoryApi {
         const response = await axios.get(url, {headers: headers, params: {detail: detail}})
         console.log("CategoryApi.listCategories response", response)
         return response
-
     }
+
+
 }

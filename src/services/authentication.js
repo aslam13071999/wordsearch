@@ -34,7 +34,9 @@ export class AuthenticationService {
     }
 
     getAccessToken = async () => {
-        if (this.refresh_token == null) return null
+        if (this.access_token == null){
+            await this.authenticate('asif', 'rgukt123')
+        }
         const current_time = Date.now()
         const next_refresh = this.last_refresh_at + (5 * 60 * 1000)
         if (next_refresh <= current_time) {

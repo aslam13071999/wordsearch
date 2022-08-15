@@ -22,6 +22,15 @@ export class GameBoardApi{
 
     }
 
+    getLatestBoard = async( roomId) => {
+        const url = ApiConfig.GAME_BOARD_LATEST_URL
+        const headers = await new AuthenticationService().getAuthHeaders()
+        const response = await axios.get(url, {headers: headers, params: {room_id: roomId}})
+        console.log("GameboardApi.getLatestBoard response", response)
+        return response
+
+    }
+
 
 
 }

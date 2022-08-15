@@ -13,6 +13,14 @@ export class RoomApi {
         return response
     }
 
+    listRooms = async () => {
+        const url = ApiConfig.ROOM_LIST_URL
+        const headers = await new AuthenticationService().getAuthHeaders()
+        const response = await axios.get(url, {headers: headers})
+        console.log("RoomApi.listRooms response", response)
+        return response
+    }
+
     join = async (roomId) => {
         const url = ApiConfig.ROOM_JOIN_URL.format("{roomId}", roomId)
         const headers = await new AuthenticationService().getAuthHeaders()

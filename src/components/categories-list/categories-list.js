@@ -1,9 +1,10 @@
 import {Component} from "react";
 import {CategoryApi} from "../../services/category-api";
 import CategoryViewSmall from "../category-view-small/category-view-small";
+import withRouter from "../../routerUtil";
 
 
-export default class CategoryList extends Component {
+ class CategoryList extends Component {
 
     constructor(props) {
         super(props);
@@ -38,3 +39,5 @@ export default class CategoryList extends Component {
         )
     }
 }
+
+export default withRouter(CategoryList)
