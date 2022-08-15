@@ -38,8 +38,8 @@ export class AuthenticationService {
         const current_time = Date.now()
         const next_refresh = this.last_refresh_at + (5 * 60 * 1000)
         if (next_refresh <= current_time) {
-            const response = await this.refreshAccessToken()
-            return response
+            console.log("token is expired, refreshing")
+            await this.refreshAccessToken()
         }
         return this.access_token
     }
