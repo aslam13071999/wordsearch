@@ -15,7 +15,8 @@ export class GameBoardView extends Component {
 
         this.state = {
             width: window.innerWidth,
-            height: window.innerHeight
+            height: window.innerHeight,
+            board_size: 300
         }
         window.addEventListener('resize', this.handleWindowSize)
     }
@@ -38,17 +39,23 @@ export class GameBoardView extends Component {
 
         const font = '1em sans'
 
+        const board_size = (this.font_size * 2) * (N + 1);
+
+        canvas.width = board_size
+        canvas.height = board_size
 
         for (let i = 0; i < N; ++i) {
             for (let j = 0; j < N; ++j) {
                 let x = (this.font_size * 2) + ((this.font_size * 2) * i);
                 let y = (this.font_size * 2) + ((this.font_size * 2) * j);
-                console.log("drawing", this.board_data[i][j], x, y)
                 let ctx = canvas.getContext('2d')
                 ctx.font = font
                 ctx.fillText(this.board_data[i][j], x, y)
             }
         }
+        this.setState({
+            board_size: board_size
+        })
     }
 
     componentDidMount() {
@@ -59,11 +66,19 @@ export class GameBoardView extends Component {
     render = () => {
         return (
             <div className="game-board">
-                <canvas id="canvas" className={"canvas"} width="800px" height="800px">
+                <canvas id="canvas" className={"canvas"} >
 
                 </canvas>
                 <div className={"dictionary"}>
-                    A
+                    {
+                        this.board_dictionary.map((board_word) => {
+                            return (
+                                <div key={board_word}>
+                                    {board_word}
+                                </div>
+                            )
+                        })
+                    }
                 </div>
                 <div className={"placeholder"}>
                     B
