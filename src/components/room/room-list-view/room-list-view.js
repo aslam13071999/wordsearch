@@ -1,8 +1,7 @@
 import {Component} from "react";
-import {RoomApi} from "../../services/room-api";
+import {RoomApi} from "../../../services/room-api";
 import RoomViewSmall from "../room-view-small/room-view-small";
-import withRouter from "../../routerUtil";
-import Header from "../header/header";
+import withRouter from "../../../routerUtil";
 
 
 class RoomListView extends Component {

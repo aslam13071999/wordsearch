@@ -2,7 +2,6 @@ import {Link} from "react-router-dom";
 import React from "react";
 import { useState } from 'react'
 import { Switch } from '@headlessui/react'
-import { Popover } from '@headlessui/react'
 
 const Header = ()=>{
     const [enabled, setEnabled] = useState(true);

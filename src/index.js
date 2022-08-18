@@ -5,10 +5,10 @@ import {BrowserRouter, Route, Routes} from "react-router-dom";
 import reportWebVitals from './reportWebVitals';
 
 import App from './App';
-import CategoryList from "./components/categories-list/categories-list";
-import RoomListView from "./components/room-list-view/room-list-view";
-import RoomView from "./components/room-view/room-view";
-import Header from "./components/header/header";
+import CategoryList from "./components/category/categories-list/categories-list";
+import RoomListView from "./components/room/room-list-view/room-list-view";
+import RoomView from "./components/room/room-view/room-view";
+import Header from "./components/site/header/header";
 
 
 const root = ReactDOM.createRoot(document.getElementById('root'));

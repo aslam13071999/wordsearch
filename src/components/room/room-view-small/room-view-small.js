@@ -1,5 +1,5 @@
 import {Component} from "react";
-import MemberProfile from "../member-profile/member-profile";
+import PlayerProfile from "../../players/player-profile/player-profile";
 import {Link} from "react-router-dom";
 
 
@@ -17,7 +17,7 @@ export default class RoomViewSmall extends Component {
                 {
                     this.players.map((player) => {
                         return(
-                            <MemberProfile username={"pavani"} email={player.email} key={player.username} />
+                            <PlayerProfile username={"pavani"} email={player.email} key={player.username} />
                         )
                     })
                 }

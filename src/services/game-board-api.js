@@ -32,5 +32,13 @@ export class GameBoardApi{
     }
 
 
+    deleteGameBoard = async (boardId) => {
+        const url = ApiConfig.GAME_BOARD_DELETE_URL.replace("{boardId}", boardId)
+        const headers = await new AuthenticationService().getAuthHeaders()
+        const response = await axios.delete(url, {headers: headers})
+        console.log("GameboardApi.deleteGameboard response", response)
+        return response
+    }
+
 
 }

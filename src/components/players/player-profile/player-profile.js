@@ -1,7 +1,7 @@
 import React from "react";
 
 
-export default class MemberProfile extends React.Component {
+export default class PlayerProfile extends React.Component {
 
     render() {
         return (

@@ -1,6 +1,6 @@
 
 export class ApiConfig{
-    static API_URL = "http://localhost:8000"
+    static API_URL = "http://192.168.0.109:8000"
 
     static CATEGORIES_LIST_URL = ApiConfig.API_URL + "/word-search/category/"
     static CATEGORIES_VIEW_URL= ApiConfig.API_URL + "/word-search/category/{category}/"
@@ -14,5 +14,6 @@ export class ApiConfig{
     static ROOM_INFO_URL = ApiConfig.API_URL + "/word-search/room/{roomId}/"
     static ROOM_JOINED_USERS_URL = ApiConfig.API_URL + "/word-search/room/{roomId}/joined_players/"
     static ROOM_LIST_URL = ApiConfig.API_URL + "/word-search/room/"
+    static GAME_BOARD_DELETE_URL = ApiConfig.API_URL + "/word-search/gameboard/{boardId}";
 
 }
