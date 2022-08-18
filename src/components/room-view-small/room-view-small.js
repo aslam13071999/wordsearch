@@ -13,11 +13,11 @@ export default class RoomViewSmall extends Component {
 
     render = () => {
         return(
-            <div style={{width: "300px", border: "1px solid gray", margin: "10px", marginBottom: "40px"}}>
+            <div className="w-[300px] h-[350px] bg-white text-blue-900 m-[10px] rounded-md border-t-amber-200 border-t-4 hover:shadow-lg hover:shadow-orange-600">
                 {
                     this.players.map((player) => {
                         return(
-                            <MemberProfile username={player.username} email={player.email} key={player.username} />
+                            <MemberProfile username={"pavani"} email={player.email} key={player.username} />
                         )
                     })
                 }

@@ -2,6 +2,7 @@ import {Component} from "react";
 import {CategoryApi} from "../../services/category-api";
 import CategoryViewSmall from "../category-view-small/category-view-small";
 import withRouter from "../../routerUtil";
+import Header from "../header/header";
 
 
  class CategoryList extends Component {

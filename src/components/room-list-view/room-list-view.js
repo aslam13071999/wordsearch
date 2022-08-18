@@ -2,6 +2,7 @@ import {Component} from "react";
 import {RoomApi} from "../../services/room-api";
 import RoomViewSmall from "../room-view-small/room-view-small";
 import withRouter from "../../routerUtil";
+import Header from "../header/header";
 
 
 class RoomListView extends Component {
@@ -33,8 +34,11 @@ class RoomListView extends Component {
     render = () => {
         return (
             <div>
-                <button onClick={this.createRoom} >
-                    Create Room </button>
+                <div className="text-center mt-3 mb-8">
+                    <button onClick={this.createRoom}  className="border-2 border-solid border-white p-2 bg-transparent transition hover:bg-white hover:text-blue-900 ">
+                        Create Room </button>
+                </div>
+
                 <div style={{display: "flex", flexWrap: "wrap", justifyContent: "space-around", alignContent: "space-around"}}>
                     {
                         this.state.rooms !== null && this.state.rooms.map((room_data) => {

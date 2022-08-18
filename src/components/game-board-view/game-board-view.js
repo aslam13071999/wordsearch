@@ -67,7 +67,6 @@ export class GameBoardView extends Component {
                 </div>
                 <div className={"placeholder"}>
                     B
-
                 </div>
 
             </div>
