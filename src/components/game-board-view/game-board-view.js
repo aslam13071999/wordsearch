@@ -37,19 +37,22 @@ export class GameBoardView extends Component {
 
         const canvas = document.getElementById("canvas")
 
-        const font = '1em sans'
+        const font = '2em sans'
+        const fillStyle= "white"
 
-        const board_size = (this.font_size * 2) * (N + 1);
+        const factor = 3.5
+        const board_size = (this.font_size * factor) * (N + 1);
 
         canvas.width = board_size
         canvas.height = board_size
 
         for (let i = 0; i < N; ++i) {
             for (let j = 0; j < N; ++j) {
-                let x = (this.font_size * 2) + ((this.font_size * 2) * i);
-                let y = (this.font_size * 2) + ((this.font_size * 2) * j);
+                let x = (this.font_size * factor) + ((this.font_size * factor) * i);
+                let y = (this.font_size * factor) + ((this.font_size * factor) * j);
                 let ctx = canvas.getContext('2d')
                 ctx.font = font
+                ctx.fillStyle = fillStyle
                 ctx.fillText(this.board_data[i][j], x, y)
             }
         }
