@@ -1,160 +1,160 @@
 import {Component} from "react";
 import './game-board-view.css'
-import {GameBoardSubmissions} from "../game-board-submissions/game-board-submissions";
-import {GameBoardDictionary} from "../game-board-dictionary/game-board-dictionary";
 
 
 export default class GameBoardView extends Component {
 
     constructor(props) {
         super(props);
-        this.room_id = this.props.room_id
-        this.board_id = this.props.board_id
-        this.board_data = this.props.board_data
-        this.delete_board = this.props.delete_board
-        this.board_dictionary= this.props.board_dictionary
-
+        this.roomId = this.props.room_id
+        this.boardId = this.props.board_id
+        this.boardData = this.props.board_data
+        this.boardDictionary = this.props.board_dictionary
 
         this.state = {
-            board_size: 300,
-            fontSize: 30,
-            fontFamily: "ubuntu",
-            fillColor: "black"
+            fontSize: 32, fontFamily: "ubuntu", fontColor: "black"
         }
+
+
     }
 
-    // changeFontSize = (e) => {
-    //     console.log("Font size changed", e.target.value)
-    //     this.setState({
-    //         fontSize: parseInt(e.target.value)
-    //     })
-    // }
-    // changeFillColor = (e) => {
-    //     console.log("fill color changed", e.target.value)
-    //     this.setState({
-    //         fillColor: e.target.value
-    //     })
-    // }
-    // changeFontFamily = (e) => {
-    //     console.log("font family changed", e.target.value)
-    //     this.setState({
-    //         fontFamily: e.target.value
-    //     })
-    // }
+    changeFontSize = (e) => this.setState({fontSize: parseInt(e.target.value)})
+    changeFontColor = (e) => this.setState({fontColor: e.target.value})
+    changeFontFamily = (e) => this.setState({fontFamily: e.target.value})
+
+
+    setBoardContext = () => {
+
+        this.board_canvas = document.getElementById("boardData")
+        this.overlay_canvas = document.getElementById("overlay")
+
+        this.paddingFactor = 0.4
+        this.offsetFactor = 1.5
+
+        this.cellPadding = this.state.fontSize * this.paddingFactor
+        this.cellSize = (this.cellPadding * 2) + this.state.fontSize
+        this.offset = this.state.fontSize * this.offsetFactor
+
+        this.N = this.boardData.length
+        this.font = this.state.fontSize + "px " + this.state.fontFamily
+
+        this.lineSize = this.N * this.cellSize
+        this.boardSize = this.lineSize + (2 * this.offset);
+
+    }
 
     draw = () => {
-        const N = this.board_data.length
-        const font_size = this.state.fontSize
-        const fontFamily = this.state.fontFamily
-        const fillColor = this.state.fillColor
-        const font = font_size + "px " + fontFamily
-        const canvas = document.getElementById("canvas")
+        // reset the board
+        this.board_canvas.width = this.boardSize
+        this.board_canvas.height = this.boardSize
+        this.overlay_canvas.width = this.boardSize
+        this.overlay_canvas.height = this.boardSize
 
-
-        const cell_padding_factor = 0.4
-        const offset_factor = 1.5
-        const cell_padding = font_size * cell_padding_factor
-        const cell_size = 2 * cell_padding + font_size
-        const offset = font_size * (offset_factor)
-
-
-        const line_size = (N) * cell_size;
-        const board_size = line_size + (2 * offset);
-
-        canvas.width = board_size
-        canvas.height = board_size
-
-
-        for (let i = 0; i <= N; ++i) {
-            // row lines
-            let x1 = offset
-            let x2 = line_size + offset
-            let y = offset + (i * cell_size);
-            let ctx = canvas.getContext("2d");
+        let ctx = this.board_canvas.getContext("2d");
+        // row lines
+        for (let i = 0; i <= this.N; ++i) {
+            let x1 = this.offset
+            let x2 = this.lineSize + this.offset
+            let y = this.offset + (i * this.cellSize);
             ctx.beginPath();
-            ctx.fillStyle = fillColor
+            ctx.fillStyle = this.state.fontColor
             ctx.moveTo(x1, y);
             ctx.lineTo(x2, y);
             ctx.stroke();
-
-            // column lines
-            let y1 = offset
-            let y2 = line_size + offset
-            let x = offset + (i * cell_size);
-            let ctx2 = canvas.getContext("2d");
-            ctx2.beginPath();
-            ctx2.fillStyle = fillColor
-            ctx2.moveTo(x, y1);
-            ctx2.lineTo(x, y2);
-            ctx2.stroke();
         }
-
-
-        for(let i=0; i<N; ++i){
-            for(let j=0; j<N; ++j){
-                let x = offset + (j * cell_size);
-                let y = offset + (i * cell_size);
-                x += (cell_padding)
-                y += (cell_padding)
-                let ctx = canvas.getContext('2d')
+        // column lines
+        for (let i = 0; i <= this.N; ++i) {
+            let y1 = this.offset
+            let y2 = this.lineSize + this.offset
+            let x = this.offset + (i * this.cellSize);
+            ctx.beginPath();
+            ctx.fillStyle = this.state.fontColor
+            ctx.moveTo(x, y1);
+            ctx.lineTo(x, y2);
+            ctx.stroke();
+        }
+        // board contents
+        for (let i = 0; i < this.N; ++i) {
+            for (let j = 0; j < this.N; ++j) {
+                let x = this.offset + (j * this.cellSize);
+                let y = this.offset + (i * this.cellSize);
+                x += (this.cellSize)
+                y += (this.cellSize)
                 ctx.beginPath();
-                ctx.rect(x, y, font_size, font_size);
-                // ctx.stroke();
+                ctx.rect(x, y, this.state.fontSize, this.state.fontSize);
+                //ctx.stroke();
 
+                x = this.offset + (j * this.cellSize);
+                y = this.offset + (i * this.cellSize);
+                x += (this.cellSize / 2)
+                y += (this.cellSize / 2)
 
-                x = offset + (j * cell_size);
-                y = offset + (i * cell_size);
-                x += (cell_size/2)
-                y += (cell_size/2)
-
-                ctx.font = font
-                ctx.fillStyle = fillColor
+                ctx.font = this.font
+                ctx.fillStyle = this.state.fontColor
                 ctx.textAlign = 'center'
                 ctx.textBaseline = 'middle'
-                ctx.fillText(this.board_data[i][j], x, y)
+                ctx.fillText(this.boardData[i][j], x, y)
             }
         }
 
-        this.setState({
-            board_size: board_size
-        })
     }
 
     componentDidMount() {
+        this.setBoardContext()
         this.draw()
     }
 
+    componentDidUpdate(prevProps, prevState, snapshot) {
+        this.setBoardContext()
+        this.draw()
+    }
+
+    getEventPosition = (e) => {
+        const rect = this.board_canvas.getBoundingClientRect()
+        const elementRelativeX = e.clientX - rect.left;
+        const elementRelativeY = e.clientY - rect.top;
+        const x = elementRelativeX * this.board_canvas.width / rect.width;
+        const y = elementRelativeY * this.board_canvas.height / rect.height;
+        return {x, y}
+    }
+
+    getEventCell = (e) => {
+        let point = this.getEventPosition(e)
+        point.x -= this.offset
+        point.y -= this.offset
+        return {
+            column: Math.floor(point.x / this.cellSize),
+            row: Math.floor(point.y / this.cellSize)
+        }
+    }
+
+    onCanvasMouseUp = (e) => {
+        console.log("mouseup", e)
+        let point = this.getEventCell(e)
+        console.log("event happened at ", point)
+    }
+    onCanvasMouseDown = (e) => {
+        console.log("mousedown", e)
+        let point = this.getEventCell(e)
+        console.log("event happened at ", point)
+    }
 
     render = () => {
         return (
-            <div className={"game-board-view"}>
-                <div className="canvas">
+            <div>
 
-                    {/*<div style={{marginTop: "40px"}}>*/}
-                    {/*    Font Size: <input type={"number"} onChange={this.changeFontSize} value={this.state.fontSize} />*/}
-                    {/*    Font Color: <input type={"text"} onChange={this.changeFillColor} value={this.state.fillColor} />*/}
-                    {/*    Font Family: <input type={"text"} onChange={this.changeFontFamily} value={this.state.fontFamily} />*/}
-                    {/*    <button onClick={this.draw}> Redraw </button>*/}
-                    {/*</div>*/}
-
-                    <canvas id="canvas">
-
+                {/*<div style={{marginTop: "40px"}}>*/}
+                {/*    Font Size: <input type={"number"} onChange={this.changeFontSize} value={this.state.fontSize} />*/}
+                {/*    Font Color: <input type={"text"} onChange={this.changeFillColor} value={this.state.fillColor} />*/}
+                {/*    Font Family: <input type={"text"} onChange={this.changeFontFamily} value={this.state.fontFamily} />*/}
+                {/*    <button onClick={this.draw}> Redraw </button>*/}
+                {/*</div>*/}
+                <div className={"canvas-elements"}>
+                    <canvas id="boardData" onMouseDown={this.onCanvasMouseDown} onMouseUp={this.onCanvasMouseUp}>
+                    </canvas>
+                    <canvas id="overlay" className={"canvas-overlay"}>
                     </canvas>
                 </div>
-                <div className="dictionary">
-                    <GameBoardDictionary board_dictionary={this.board_dictionary} solved_words={[]} />
-                </div>
-                <div className="submissions">
-                    <GameBoardSubmissions submissions={[]} />
-                </div>
-
-                <div className="placeholder">
-                    <div onClick={this.delete_board}>
-                        Close Game
-                    </div>
-                </div>
-
-
             </div>
         )
     }

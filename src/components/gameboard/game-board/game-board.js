@@ -2,6 +2,8 @@ import GameBoardCreateView from "../game-board-create-view/game-board-create-vie
 import GameBoardView from "../game-board-view/game-board-view";
 import React, {Component} from "react";
 import {GameBoardApi} from "../../../services/game-board-api";
+import {GameBoardDictionary} from "../game-board-dictionary/game-board-dictionary";
+import {GameBoardSubmissions} from "../game-board-submissions/game-board-submissions";
 
 
 export class GameBoard extends Component {
@@ -57,11 +59,30 @@ export class GameBoard extends Component {
     render = () => {
         if (this.state.have_board) {
             return (
-                <GameBoardView room_id={this.room_id}
-                               board_id={this.state.latest_board.id}
-                               board_data={this.state.latest_board.board_data}
-                               board_dictionary={this.state.latest_board.board_dictionary}
-                               delete_board={this.deleteBoard}/>
+                <div className={"game-board-view"}>
+                    <div className="canvas">
+                        <GameBoardView
+                            room_id={this.room_id}
+                            board_id={this.state.latest_board.id}
+                            board_data={this.state.latest_board.board_data}
+                            board_dictionary={this.state.latest_board.board_dictionary}
+                        />
+                    </div>
+                    <div className="dictionary">
+                        <GameBoardDictionary board_dictionary={this.state.latest_board.board_dictionary} solved_words={[]}/>
+                    </div>
+                    <div className="submissions">
+                        <GameBoardSubmissions submissions={[]}/>
+                    </div>
+
+                    <div className="placeholder">
+                        <div onClick={this.deleteBoard}>
+                            Close Game
+                        </div>
+                    </div>
+
+
+                </div>
             )
         }
         return(
