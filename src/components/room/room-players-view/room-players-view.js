@@ -6,6 +6,7 @@ import {RoomApi} from "../../../services/room-api";
 export class RoomPlayersView extends Component{
     constructor(props) {
         super(props);
+        this.room_id = this.props.room_id
         this.room_api = new RoomApi()
         this.state = {
             players: []

@@ -1,5 +1,4 @@
 import React from "react";
-import {PlayerList} from "../../players/player-list/player-list";
 
 
 import './room-view.css'

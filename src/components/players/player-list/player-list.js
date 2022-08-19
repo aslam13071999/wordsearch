@@ -1,16 +1,19 @@
 import React from "react";
 import PlayerProfile from "../player-profile/player-profile";
-import {RoomApi} from "../../../services/room-api";
 
 
 export class PlayerList extends React.Component {
+    constructor(props) {
+        super(props);
+        this.players = this.props.players
+    }
 
 
     render() {
         return (
             <div>
                 {
-                    this.props.players.map((player) => {
+                    this.players.map((player) => {
                         return(
                             <PlayerProfile
                                 key={player.username}
