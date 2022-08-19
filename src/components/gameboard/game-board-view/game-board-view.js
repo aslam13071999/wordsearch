@@ -15,31 +15,32 @@ export default class GameBoardView extends Component {
         this.board_dictionary= this.props.board_dictionary
 
 
-        this.fonts_available = ["sans", "serif", "roboto"]
-
         this.state = {
             board_size: 300,
             fontSize: 30,
-            fontFamily: "serif",
+            fontFamily: "ubuntu",
             fillColor: "black"
         }
     }
 
-    changeFontSize = (e) => {
-        this.setState({
-            fontSize: e.target.value
-        })
-    }
-    changeFillColor = (e) => {
-        this.setState({
-            fillColor: e.target.value
-        })
-    }
-    changeFontFamily = (e) => {
-        this.setState({
-            fontFamily: e.target.value
-        })
-    }
+    // changeFontSize = (e) => {
+    //     console.log("Font size changed", e.target.value)
+    //     this.setState({
+    //         fontSize: parseInt(e.target.value)
+    //     })
+    // }
+    // changeFillColor = (e) => {
+    //     console.log("fill color changed", e.target.value)
+    //     this.setState({
+    //         fillColor: e.target.value
+    //     })
+    // }
+    // changeFontFamily = (e) => {
+    //     console.log("font family changed", e.target.value)
+    //     this.setState({
+    //         fontFamily: e.target.value
+    //     })
+    // }
 
     draw = () => {
         const N = this.board_data.length
@@ -47,16 +48,15 @@ export default class GameBoardView extends Component {
         const fontFamily = this.state.fontFamily
         const fillColor = this.state.fillColor
         const font = font_size + "px " + fontFamily
-        console.log(font)
         const canvas = document.getElementById("canvas")
 
 
         const cell_padding_factor = 0.4
         const offset_factor = 1.5
-        const font_scaling = 1.2
         const cell_padding = font_size * cell_padding_factor
         const cell_size = 2 * cell_padding + font_size
         const offset = font_size * (offset_factor)
+
 
         const line_size = (N) * cell_size;
         const board_size = line_size + (2 * offset);
@@ -115,16 +115,6 @@ export default class GameBoardView extends Component {
             }
         }
 
-        // for (let i = 0; i < N; ++i) {
-        //     for (let j = 0; j < N; ++j) {
-        //         let x = offset + ((this.font_size * factor) * i);
-        //         let y = offset + ((this.font_size * factor) * j) + this.font_size;
-        //         let ctx = canvas.getContext('2d')
-        //         ctx.font = font
-        //         ctx.fillStyle = fillStyle
-        //         ctx.fillText(this.board_data[i][j], x, y)
-        //     }
-        // }
         this.setState({
             board_size: board_size
         })
@@ -139,6 +129,13 @@ export default class GameBoardView extends Component {
         return (
             <div className={"game-board-view"}>
                 <div className="canvas">
+
+                    {/*<div style={{marginTop: "40px"}}>*/}
+                    {/*    Font Size: <input type={"number"} onChange={this.changeFontSize} value={this.state.fontSize} />*/}
+                    {/*    Font Color: <input type={"text"} onChange={this.changeFillColor} value={this.state.fillColor} />*/}
+                    {/*    Font Family: <input type={"text"} onChange={this.changeFontFamily} value={this.state.fontFamily} />*/}
+                    {/*    <button onClick={this.draw}> Redraw </button>*/}
+                    {/*</div>*/}
 
                     <canvas id="canvas">
 
