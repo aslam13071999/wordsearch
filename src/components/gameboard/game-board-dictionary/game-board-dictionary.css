@@ -1,0 +1,8 @@
+.dictionary-item{
+    padding: 5px;
+    text-align: center;
+}
+
+.solved{
+    background-color: green;
+}

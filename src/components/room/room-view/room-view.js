@@ -5,7 +5,6 @@ import './room-view.css'
 import withRouter from "../../../routerUtil";
 import {GameBoard} from "../../gameboard/game-board/game-board";
 import {RoomApi} from "../../../services/room-api";
-import {RoomPlayersView} from "../room-players-view/room-players-view";
 
 
 class RoomView extends React.Component {
