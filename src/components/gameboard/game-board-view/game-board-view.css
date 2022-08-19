@@ -1,37 +1,34 @@
 @media screen and (min-width: 0px) {
-    .game-board {
+    .game-board-view{
         display: flex;
-
-    }
-
-    .canvas {
-
-    }
-
-    .dictionary {
-
-    }
-
-    .placeholder{
-
+        grid-template-columns: 1fr;
+        align-content: center;
+        justify-content: center;
     }
 }
 
 @media screen and (min-width: 600px) {
-    .game-board {
-        display: flex;
+    .game-board-view{
+        display: grid;
+        grid-template-columns: 3fr 1fr 1fr 1fr;
     }
 
-    .canvas {
-
-    }
-
-    .dictionary {
-
-    }
-
-    .placeholder {
-
-    }
 }
 
+.canvas{
+    margin: 0 auto;
+}
+
+.dictionary{
+    margin-top: 30px;
+    margin-bottom: 30px;
+}
+
+.dictionary-item{
+    padding: 5px;
+    text-align: center;
+}
+
+.solved{
+    background-color: green;
+}

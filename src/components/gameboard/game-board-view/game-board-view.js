@@ -8,29 +8,21 @@ export default class GameBoardView extends Component {
         this.room_id = this.props.room_id
         this.board_id = this.props.board_id
         this.board_data = this.props.board_data
-        this.board_dictionary = this.props.board_dictionary
         this.delete_board = this.props.delete_board
+
+        this.dictionary = []
+        this.props.board_dictionary.map((dictionary_item) => {
+            this.dictionary.push({'word': dictionary_item, 'solved': Math.random() > 0.5 ? true : false})
+        })
 
         this.font_size = 12
 
         this.state = {
-            width: window.innerWidth,
-            height: window.innerHeight,
             board_size: 300
         }
-        window.addEventListener('resize', this.handleWindowSize)
     }
 
-    handleWindowSize = () => {
-        this.setState({
-            width: window.innerWidth,
-            height: window.innerHeight
-        })
-    }
 
-    componentWillUnmount() {
-        window.removeEventListener('resize', this.handleWindowSize)
-    }
 
     draw = () => {
         const N = this.board_data.length
@@ -96,26 +88,34 @@ export default class GameBoardView extends Component {
 
     render = () => {
         return (
-            <div className="game-board-view">
-                <canvas id="canvas" className={"canvas"}>
+            <div className={"game-board-view"}>
+                <div className="canvas">
+                    <canvas id="canvas">
 
-                </canvas>
-                <div className={"dictionary"}>
+                    </canvas>
+                </div>
+                <div className="dictionary">
                     {
-                        this.board_dictionary.map((board_word) => {
+                        this.dictionary.map((row) => {
                             return (
-                                <div key={board_word}>
-                                    {board_word}
+                                <div   key={row.word}
+                                    className={`dictionary-item ${row.solved ? "solved": ""}` }>
+                                    {row.word}
                                 </div>
                             )
                         })
                     }
                 </div>
-                <div className={"placeholder"}>
+                <div className="submissions">
+                    submissions
+                </div>
+
+                <div className="placeholder">
                     <div onClick={this.delete_board}>
                         Close Game
                     </div>
                 </div>
+
 
             </div>
         )

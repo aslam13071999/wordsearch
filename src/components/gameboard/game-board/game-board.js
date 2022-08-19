@@ -41,7 +41,7 @@ export class GameBoard extends Component {
     getActiveBoard = async () => {
         const response = await this.gameboard_api.getLatestBoard(this.room_id)
         console.log(response)
-        if( response.data.hasOwnProperty('board_data')){
+        if (response.data.hasOwnProperty('board_data')) {
             this.setState({
                 have_board: true,
                 latest_board: response.data
@@ -55,23 +55,17 @@ export class GameBoard extends Component {
 
 
     render = () => {
-        return (
-            <div>
-                {
-                    (this.state.have_board !== true) &&
-                    <GameBoardCreateView room_id={this.room_id} create_board={this.createBoard}/>
-                }
-                {
-                    (this.state.have_board === true) &&
-                    <GameBoardView room_id={this.room_id}
-                                   board_id={this.state.latest_board.id}
-                                   board_data={this.state.latest_board.board_data}
-                                   board_dictionary={this.state.latest_board.board_dictionary}
-                                   delete_board={this.deleteBoard}
-
-                    />
-                }
-            </div>
+        if (this.state.have_board) {
+            return (
+                <GameBoardView room_id={this.room_id}
+                               board_id={this.state.latest_board.id}
+                               board_data={this.state.latest_board.board_data}
+                               board_dictionary={this.state.latest_board.board_dictionary}
+                               delete_board={this.deleteBoard}/>
+            )
+        }
+        return(
+            <GameBoardCreateView room_id={this.room_id} create_board={this.createBoard}/>
         )
     }
 }
