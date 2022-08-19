@@ -18,7 +18,7 @@ class RoomView extends React.Component {
 
     checkValidRoom = async () => {
         // #TODO: check this validation as well
-        const response = this.room_api.getInfo()
+        const response = this.room_api.getInfo(this.room_id)
         return response.data != null
     }
 

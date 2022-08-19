@@ -22,7 +22,7 @@ export class RoomApi {
     }
 
     getInfo = async (roomId) => {
-        const url = ApiConfig.ROOM_INFO_URL.format("{roomId}", roomId)
+        const url = ApiConfig.ROOM_INFO_URL.replace("{roomId}", roomId)
         const headers = await new AuthenticationService().getAuthHeaders()
         const response = await axios.get(url, {headers: headers})
         console.log("RoomApi.getInfo response")
@@ -31,7 +31,7 @@ export class RoomApi {
     }
 
     join = async (roomId) => {
-        const url = ApiConfig.ROOM_JOIN_URL.format("{roomId}", roomId)
+        const url = ApiConfig.ROOM_JOIN_URL.replace("{roomId}", roomId)
         const headers = await new AuthenticationService().getAuthHeaders()
         const response = await axios.get(url, {headers: headers})
         console.log("RoomApi.join response")
