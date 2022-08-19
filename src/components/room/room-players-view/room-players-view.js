@@ -31,6 +31,9 @@ export class RoomPlayersView extends Component{
     render = () => {
         return(
             <div>
+                <div onClick={this.joinUser}>
+                    Join User
+                </div>
                 <PlayerList players={this.state.players}> </PlayerList>
             </div>
         )
