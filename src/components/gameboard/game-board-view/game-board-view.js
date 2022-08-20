@@ -12,7 +12,11 @@ export default class GameBoardView extends Component {
         this.boardDictionary = this.props.board_dictionary
 
         this.state = {
-            fontSize: 32, fontFamily: "ubuntu", fontColor: "black"
+            fontSize: 32,
+            fontFamily: "ubuntu",
+            fontColor: "black",
+            selectionMode: "drag", // drag, tap
+            drawLines: true
         }
 
 
@@ -21,7 +25,7 @@ export default class GameBoardView extends Component {
     changeFontSize = (e) => this.setState({fontSize: parseInt(e.target.value)})
     changeFontColor = (e) => this.setState({fontColor: e.target.value})
     changeFontFamily = (e) => this.setState({fontFamily: e.target.value})
-
+    changeSelectionMode = (e) => this.setState({selectionMode: e.target.value})
 
     setBoardContext = () => {
 
@@ -52,26 +56,28 @@ export default class GameBoardView extends Component {
 
         let ctx = this.board_canvas.getContext("2d");
         // row lines
-        for (let i = 0; i <= this.N; ++i) {
-            let x1 = this.offset
-            let x2 = this.lineSize + this.offset
-            let y = this.offset + (i * this.cellSize);
-            ctx.beginPath();
-            ctx.fillStyle = this.state.fontColor
-            ctx.moveTo(x1, y);
-            ctx.lineTo(x2, y);
-            ctx.stroke();
-        }
-        // column lines
-        for (let i = 0; i <= this.N; ++i) {
-            let y1 = this.offset
-            let y2 = this.lineSize + this.offset
-            let x = this.offset + (i * this.cellSize);
-            ctx.beginPath();
-            ctx.fillStyle = this.state.fontColor
-            ctx.moveTo(x, y1);
-            ctx.lineTo(x, y2);
-            ctx.stroke();
+        if (this.state.drawLines) {
+            for (let i = 0; i <= this.N; ++i) {
+                let x1 = this.offset
+                let x2 = this.lineSize + this.offset
+                let y = this.offset + (i * this.cellSize);
+                ctx.beginPath();
+                ctx.fillStyle = this.state.fontColor
+                ctx.moveTo(x1, y);
+                ctx.lineTo(x2, y);
+                ctx.stroke();
+            }
+            // column lines
+            for (let i = 0; i <= this.N; ++i) {
+                let y1 = this.offset
+                let y2 = this.lineSize + this.offset
+                let x = this.offset + (i * this.cellSize);
+                ctx.beginPath();
+                ctx.fillStyle = this.state.fontColor
+                ctx.moveTo(x, y1);
+                ctx.lineTo(x, y2);
+                ctx.stroke();
+            }
         }
         // board contents
         for (let i = 0; i < this.N; ++i) {
