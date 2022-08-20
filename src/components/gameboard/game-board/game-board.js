@@ -3,7 +3,7 @@ import GameBoardView from "../game-board-view/game-board-view";
 import React, {Component} from "react";
 import {GameBoardApi} from "../../../services/game-board-api";
 import {GameBoardDictionary} from "../game-board-dictionary/game-board-dictionary";
-import {GameBoardSubmissions} from "../game-board-submissions/game-board-submissions";
+import {GameBoardLeaderboard} from "../game-board-leaderboard/game-board-leaderboard";
 import {RoomApi} from "../../../services/room-api";
 
 
@@ -30,7 +30,10 @@ export class GameBoard extends Component {
         )
         this.setState({
             have_board: true,
-            latest_board: response.data
+            board_id: null,
+            board_dictionary: null,
+            board_data: null,
+            board_submissions: null
         })
     }
 
@@ -38,23 +41,34 @@ export class GameBoard extends Component {
         await this.gameboard_api.deleteGameBoard(this.state.latest_board.id);
         this.setState({
             have_board: false,
-            latest_board: null
+            board_id: null,
+            board_dictionary: null,
+            board_data: null,
+            board_submissions: null
         })
     }
 
-    getActiveBoard = async () => {
-        const response = await this.room_api.getLatestBoard(this.room_id)
-        console.log(response)
-        if (response.data.hasOwnProperty('board_data')) {
+    getActiveBoardDetails = async () => {
+        const board_info_response = await this.room_api.getLatestBoard(this.room_id)
+        console.log(board_info_response)
+        const board_id = board_info_response.data.id
+        const board_data = board_info_response.data.board_data
+        const board_dictionary = board_info_response.data.board_dictionary
+
+        const board_submissions_response = await this.gameboard_api.getSubmissions(board_id)
+        console.log(board_submissions_response)
+        const board_submissions = board_submissions_response.data
+
+        if (board_info_response.data.hasOwnProperty('board_data')) {
             this.setState({
                 have_board: true,
-                latest_board: response.data
+                board_id, board_data, board_dictionary, board_submissions
             })
         }
     }
 
     componentDidMount = async () => {
-        await this.getActiveBoard()
+        await this.getActiveBoardDetails()
     }
 
 
@@ -65,16 +79,20 @@ export class GameBoard extends Component {
                     <div className="canvas">
                         <GameBoardView
                             room_id={this.room_id}
-                            board_id={this.state.latest_board.id}
-                            board_data={this.state.latest_board.board_data}
-                            board_dictionary={this.state.latest_board.board_dictionary}
+                            board_id={this.state.board_id}
+                            board_data={this.state.board_data}
+                            board_dictionary={this.state.board_dictionary}
+                            board_submissions={this.state.board_submissions}
                         />
                     </div>
                     <div className="dictionary">
-                        <GameBoardDictionary board_dictionary={this.state.latest_board.board_dictionary} solved_words={[]}/>
+                        <GameBoardDictionary
+                            board_dictionary={this.state.board_dictionary}
+                            solved_words={this.state.board_submissions
+                        }/>
                     </div>
                     <div className="submissions">
-                        <GameBoardSubmissions submissions={[]}/>
+                        <GameBoardLeaderboard submissions={[]}/>
                     </div>
 
                     <div className="placeholder">

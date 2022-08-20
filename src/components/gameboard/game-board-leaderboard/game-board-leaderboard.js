@@ -1,7 +1,7 @@
 import {Component} from "react";
 
 
-export class GameBoardSubmissions extends Component {
+export class GameBoardLeaderboard extends Component {
 
     constructor(props) {
         super(props);

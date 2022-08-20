@@ -1,5 +1,6 @@
 import {Component} from "react";
 import './game-board-view.css'
+import {ColorGenerationService} from "../../../services/color-generation";
 
 
 export default class GameBoardView extends Component {
@@ -10,6 +11,9 @@ export default class GameBoardView extends Component {
         this.boardId = this.props.board_id
         this.boardData = this.props.board_data
         this.boardDictionary = this.props.board_dictionary
+        this.boardSubmissions = this.props.board_submissions
+
+        this.color_service = new ColorGenerationService()
 
         this.state = {
             fontSize: 32,
@@ -18,7 +22,6 @@ export default class GameBoardView extends Component {
             selectionMode: "drag", // drag, tap
             drawLines: true
         }
-
 
     }
 
@@ -47,7 +50,7 @@ export default class GameBoardView extends Component {
 
     }
 
-    draw = () => {
+    drawGameBoard = () => {
         // reset the board
         this.board_canvas.width = this.boardSize
         this.board_canvas.height = this.boardSize
@@ -107,12 +110,13 @@ export default class GameBoardView extends Component {
 
     componentDidMount() {
         this.setBoardContext()
-        this.draw()
+        this.drawGameBoard()
+        this.drawSubmissions()
     }
 
     componentDidUpdate(prevProps, prevState, snapshot) {
         this.setBoardContext()
-        this.draw()
+        this.drawGameBoard()
     }
 
     getEventPosition = (e) => {
@@ -133,6 +137,40 @@ export default class GameBoardView extends Component {
             row: Math.floor(point.y / this.cellSize)
         }
     }
+
+    getPoint = (point) => {
+        const x = this.cellPadding + ((point.column + 1) * this.cellSize)
+        const y = this.cellPadding + ((point.row + 1) * this.cellSize)
+        return {x, y}
+    }
+
+    drawRectangleLine = (x, y, w, h, r) => {
+        let ctx = this.overlay_canvas.getContext("2d");
+
+    }
+
+    drawLine = (point1, point2, color) => {
+        const cell1 = this.getPoint(point1)
+        const cell2 = this.getPoint(point2)
+        // this.drawRectangleLine(cell1.x, cell1.y, cell2.x, cell2.y, color)
+    }
+
+    drawSubmissions = () => {
+        this.boardSubmissions.forEach((submission) => {
+            this.drawLine(
+                {
+                    row: submission.submission_data['row1'],
+                    column: submission.submission_data['column1']
+                },
+                {
+                    row: submission.submission_data['row2'],
+                    column: submission.submission_data['column2'],
+                },
+                this.color_service.getColorForUser(submission.submission_by.username)
+            )
+        })
+    }
+
 
     onCanvasMouseUp = (e) => {
         console.log("mouseup", e)
@@ -156,9 +194,9 @@ export default class GameBoardView extends Component {
                 {/*    <button onClick={this.draw}> Redraw </button>*/}
                 {/*</div>*/}
                 <div className={"canvas-elements"}>
-                    <canvas id="boardData" onMouseDown={this.onCanvasMouseDown} onMouseUp={this.onCanvasMouseUp}>
-                    </canvas>
                     <canvas id="overlay" className={"canvas-overlay"}>
+                    </canvas>
+                    <canvas id="boardData" onMouseDown={this.onCanvasMouseDown} onMouseUp={this.onCanvasMouseUp}>
                     </canvas>
                 </div>
             </div>

@@ -3,7 +3,7 @@ import {AuthenticationService} from "./authentication";
 import axios from "axios";
 
 
-export class GameBoardApi{
+export class GameBoardApi {
 
     createBoard = async (roomId, category, board_size, difficulty) => {
         const url = ApiConfig.GAME_BOARD_CREATE_URL
@@ -17,7 +17,7 @@ export class GameBoardApi{
             },
             {headers: headers}
         )
-        console.log("GameboardApi.createBoard response", response)
+        console.log("GameBoardApi.createBoard response", response)
         return response
 
     }
@@ -27,9 +27,16 @@ export class GameBoardApi{
         const url = ApiConfig.GAME_BOARD_DELETE_URL.replace("{boardId}", boardId)
         const headers = await new AuthenticationService().getAuthHeaders()
         const response = await axios.delete(url, {headers: headers})
-        console.log("GameboardApi.deleteGameboard response", response)
+        console.log("GameBoardApi.deleteGameBoard response", response)
         return response
     }
 
 
+    getSubmissions = async (boardId) => {
+        const url = ApiConfig.GAME_BOARD_SUBMISSIONS_URL.replace("{boardId}", boardId)
+        const headers = await new AuthenticationService().getAuthHeaders()
+        const response = await axios.get(url, {headers: headers})
+        console.log("GameBoardApi.getSubmissions response", response)
+        return response
+    }
 }
