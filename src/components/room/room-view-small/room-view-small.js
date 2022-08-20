@@ -13,7 +13,7 @@ export default class RoomViewSmall extends Component {
 
     render = () => {
         return(
-            <div className="w-[300px] h-[350px] bg-white text-blue-900 m-[10px] rounded-md border-t-amber-200 border-t-4 hover:shadow-lg hover:shadow-orange-600">
+            <div className="w-[300px] h-[350px] bg-white text-blue-900 m-[10px] rounded-md border border-light-lt-gray border-t-light-br-color border-t-4 shadow-lg hover:shadow-dark-primary">
                 {
                     this.players.map((player) => {
                         return(
