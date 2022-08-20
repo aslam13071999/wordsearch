@@ -35,7 +35,6 @@ class RoomView extends React.Component {
                 <div className="game-board">
                     <GameBoard room_id={this.room_id}/>
                 </div>
-
             </div>
         )
     }

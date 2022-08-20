@@ -6,7 +6,6 @@ export class ApiConfig{
     static CATEGORIES_VIEW_URL= ApiConfig.API_URL + "/word-search/category/{category}/"
 
     static GAME_BOARD_CREATE_URL = ApiConfig.API_URL + "/word-search/gameboard/"
-    static GAME_BOARD_LATEST_URL = ApiConfig.API_URL + "/word-search/gameboard/latest"
     static GAME_BOARD_DELETE_URL = ApiConfig.API_URL + "/word-search/gameboard/{boardId}";
 
     static ROOM_CREATE_URL = ApiConfig.API_URL + "/word-search/room/"
@@ -15,6 +14,7 @@ export class ApiConfig{
     static ROOM_INFO_URL = ApiConfig.API_URL + "/word-search/room/{roomId}/"
     static ROOM_JOINED_USERS_URL = ApiConfig.API_URL + "/word-search/room/{roomId}/joined_players/"
     static ROOM_LIST_URL = ApiConfig.API_URL + "/word-search/room/"
+    static ROOM_LATEST_BOARD_URL = ApiConfig.API_URL + "/word-search/room/{roomId}/latest_board/"
 
 
 }

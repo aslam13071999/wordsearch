@@ -56,4 +56,14 @@ export class RoomApi {
         console.log(response)
         return response
     }
+
+
+    getLatestBoard = async( roomId) => {
+        const url = ApiConfig.ROOM_LATEST_BOARD_URL.replace("{roomId}", roomId)
+        const headers = await new AuthenticationService().getAuthHeaders()
+        const response = await axios.get(url, {headers: headers})
+        console.log("RoomApi.getLatestBoard response", response)
+        return response
+    }
+
 }

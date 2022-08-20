@@ -4,6 +4,7 @@ import React, {Component} from "react";
 import {GameBoardApi} from "../../../services/game-board-api";
 import {GameBoardDictionary} from "../game-board-dictionary/game-board-dictionary";
 import {GameBoardSubmissions} from "../game-board-submissions/game-board-submissions";
+import {RoomApi} from "../../../services/room-api";
 
 
 export class GameBoard extends Component {
@@ -11,6 +12,7 @@ export class GameBoard extends Component {
     constructor(props) {
         super(props);
         this.gameboard_api = new GameBoardApi()
+        this.room_api = new RoomApi()
         this.room_id = this.props.room_id
         this.state = {
             have_board: false,
@@ -41,7 +43,7 @@ export class GameBoard extends Component {
     }
 
     getActiveBoard = async () => {
-        const response = await this.gameboard_api.getLatestBoard(this.room_id)
+        const response = await this.room_api.getLatestBoard(this.room_id)
         console.log(response)
         if (response.data.hasOwnProperty('board_data')) {
             this.setState({
