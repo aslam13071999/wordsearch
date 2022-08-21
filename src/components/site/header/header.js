@@ -18,7 +18,7 @@ const Header = (props)=>{
         }
     }
     return(
-        <div className={`sticky bg-light-primary dark:bg-light-secondary boxShadow top-0 z-[1000]  flex h-[72px] items-center justify-between px-10 md:px-12 opacity`}>
+        <div className={`sticky bg-light-primary dark:bg-light-secondary boxShadow  top-0 z-[1000]  flex h-[72px] items-center justify-between px-10 md:px-12 opacity`}>
             <div>
                 <Link to={"/"}>
                     <span className='span font-bold text-xl'>MULTIplayer</span>
