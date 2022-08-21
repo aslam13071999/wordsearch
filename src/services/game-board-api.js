@@ -39,4 +39,17 @@ export class GameBoardApi {
         console.log("GameBoardApi.getSubmissions response", response)
         return response
     }
+
+    makeSubmission = async (boardId, start_cell, end_cell, word) => {
+        const url = ApiConfig.GAME_BOARD_MAKE_SUBMISSIONS_URL.replace("{boardId}", boardId)
+        const headers = await new AuthenticationService().getAuthHeaders()
+        const payload = {
+            "word": word,
+            "row1": start_cell.row, "column1": start_cell.column,
+            "row2": end_cell.row, "column2": end_cell.column
+        }
+        const response = await axios.post(url, payload, {headers: headers})
+        console.log("GameBoardApi.makeSubmission response", response)
+        return response
+    }
 }

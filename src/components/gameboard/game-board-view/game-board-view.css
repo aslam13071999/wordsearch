@@ -22,6 +22,17 @@
     margin-bottom: 30px;
 }
 
-#boardData{
+
+.canvas-overlay{
     position: absolute;
+
+}
+.draw_overlay {
+    z-index: 0;
+}
+.submission_overlay {
+    z-index: 1;
+}
+.boardData {
+    z-index: 2;
 }

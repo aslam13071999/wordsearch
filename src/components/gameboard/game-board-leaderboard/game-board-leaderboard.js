@@ -13,9 +13,9 @@ export class GameBoardLeaderboard extends Component {
             <div>
                 <center> Submissions </center>
                 {
-                    this.submissions.map((submission) => {
+                    this.submissions.forEach((submission) => {
                         return (
-                            <div key={submission}>
+                            <div key={submission.submission_id}>
                                 {submission}
                             </div>
                         )
