@@ -40,9 +40,9 @@ class RoomListView extends Component {
 
                 <div style={{display: "flex", flexWrap: "wrap", justifyContent: "space-around", alignContent: "space-around"}}>
                     {
-                        this.state.rooms !== null && this.state.rooms.map((room_data) => {
+                        this.state.rooms !== null && this.state.rooms.map((room_data,roomNum) => {
                             return(
-                                <RoomViewSmall players={room_data.players} room_id={room_data.id} key={"room" + room_data.id}/>
+                                <RoomViewSmall players={room_data.players} room_id={room_data.id} key={"room" + room_data.id} roomNum={roomNum+1}/>
                             )
                         })
                     }

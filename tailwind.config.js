@@ -20,8 +20,6 @@ module.exports = {
         'secondary':'#ffffff'
       }
       },
-
-
     extend: {
     }
   },

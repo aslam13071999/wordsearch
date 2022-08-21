@@ -10,16 +10,17 @@ const Header = (props)=>{
     const setThemestate = (val)=>{
         setEnabled(val);
         props.changeTheme(val?'dark':'light')
-        const html = document.querySelector("html");
-        console.log("updating the theme")
-        if (val === true) {
-            html.classList.add("dark")
-        } else {
-            html.classList.remove("dark")
-        }
+        // const html = document.querySelector("html");
+        // console.log("updating the theme")
+        // if (val === true) {
+        //     html.classList.add("dark")
+        // } else {
+        //     html.classList.remove("dark")
+        // }
     }
+    console.log("them",theme)
     return(
-        <div className={`sticky bg-${theme}-primary boxShadow top-0 z-[1000]  flex h-[72px] items-center justify-between px-10 md:px-12 text-${theme}-secondary`}>
+        <div className={`sticky bg-${theme}-primary boxShadow top-0 z-[1000]  flex h-[72px] items-center justify-between px-10 md:px-12 text-${theme}-secondary opacity`}>
             <div>
                 <Link to={"/"}>
                     <span className='span font-bold text-xl'>MULTIplayer</span>
