@@ -14,10 +14,6 @@ module.exports = {
         'br-color':'#a3a3a3',
         'lt-gray':'#e5e5e5',
         'blue':'#1e40af'
-      },
-      'dark':{
-        'primary':'#111827',
-        'secondary':'#ffffff'
       }
       },
     extend: {
