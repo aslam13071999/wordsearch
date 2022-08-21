@@ -77,9 +77,15 @@ export class GameBoard extends Component {
 
     addSubmission = async (start_cell, end_cell, word) => {
         await this.gameboard_api.makeSubmission(this.state.board_id, start_cell, end_cell, word)
-        const board_submissions = [...await this.loadSubmissions(this.state.board_id)]
-        this.setState({board_submissions})
-        console.log("updated the state")
+        const board_submissions = [...await this.loadSubmissions(this.state.board_id)];
+        console.log("updated the state",board_submissions);
+        this.setState({
+            ...this.state,
+            board_submissions:[
+                ...board_submissions
+            ]
+        })
+
     }
 
 
@@ -89,6 +95,7 @@ export class GameBoard extends Component {
 
 
     render = () => {
+        console.log("render",this.state);
         if (this.state.have_board) {
             return (
                 <div className={"game-board-view"}>

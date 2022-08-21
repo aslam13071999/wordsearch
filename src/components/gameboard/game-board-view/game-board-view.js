@@ -38,13 +38,18 @@ export default class GameBoardView extends Component {
     changeSelectionMode = (e) => this.setState({selectionMode: e.target.value})
 
     componentDidMount = () => {
+        console.log("didmount")
         this.setBoardContext()
         this.drawGameBoard()
         this.setSubmissionsOverlayContext()
         this.drawSubmissions()
         this.setDrawOverlayContext()
     }
-
+    componentDidUpdate(prevProps, prevState, snapshot) {
+        if(this.props.board_submissions.length != prevProps.board_submissions.length){
+          console.log("didupdate");
+        }
+    }
 
 
     setBoardContext = () => {
@@ -182,6 +187,7 @@ export default class GameBoardView extends Component {
     }
 
     drawLineBetweenCells = (canvas, cell1, cell2, color) => {
+        console.log("drawLineBetweenPoints ");
         const point1 = this.getCenterPoint(cell1)
         const point2 = this.getCenterPoint(cell2)
         this.drawLineBetweenPoints(canvas, point1, point2, color)
@@ -330,15 +336,16 @@ export default class GameBoardView extends Component {
     }
 
     render = () => {
+        console.log("gameboardview renders");
         return (
             <div>
 
-                {/*<div style={{marginTop: "40px"}}>*/}
-                {/*    Font Size: <input type={"number"} onChange={this.changeFontSize} value={this.state.fontSize} />*/}
-                {/*    Font Color: <input type={"text"} onChange={this.changeFillColor} value={this.state.fillColor} />*/}
-                {/*    Font Family: <input type={"text"} onChange={this.changeFontFamily} value={this.state.fontFamily} />*/}
-                {/*    <button onClick={this.draw}> Redraw </button>*/}
-                {/*</div>*/}
+                <div style={{marginTop: "40px"}}>
+                    Font Size: <input type={"number"} onChange={this.changeFontSize} value={this.state.fontSize} />
+                    Font Color: <input type={"text"} onChange={this.changeFillColor} value={this.state.fillColor} />
+                    Font Family: <input type={"text"} onChange={this.changeFontFamily} value={this.state.fontFamily} />
+                    <button onClick={this.draw}> Redraw </button>
+                </div>
                 <div className={"canvas-elements"}>
                     <canvas id="draw_overlay" className={"canvas-overlay"}
 
