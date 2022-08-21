@@ -6,18 +6,13 @@ import RoomView from "../room/room-view/room-view";
 import CategoryList from "../category/categories-list/categories-list";
 import React, {useState} from "react";
 
-export const ThemeContext = React.createContext("light");
+export const ThemeContext = React.createContext("");
 const Layout = () => {
-    const [theme, setTheme] = useState('light')
-    const changeTheme = (color) => {
-        setTheme(color);
-    }
-    console.log("hell,o", theme);
     return (
 
-        <ThemeContext.Provider value={theme}>
-            <div className={`bg-${theme}-primary text-${theme}-secondary h-[100%] `}>
-                <Header changeTheme={changeTheme}/>
+        <ThemeContext.Provider value={""}>
+            <div className="bg-light-primary dark:bg-light-secondary text-light-secondary dark:text-light-primary h-[100vh]">
+                <Header/>
                 <Routes>
                     <Route path="/" element={<App/>}/>
                     <Route path="/room" element={<RoomListView/>}/>

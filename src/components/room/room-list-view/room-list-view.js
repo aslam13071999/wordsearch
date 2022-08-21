@@ -34,7 +34,7 @@ class RoomListView extends Component {
         return (
             <div>
                 <div className="text-center mt-3 mb-8">
-                    <button onClick={this.createRoom}  className="border-2 border-solid border-white p-2 bg-transparent transition hover:bg-white hover:text-blue-900 ">
+                    <button onClick={this.createRoom}  className="border-2 border-solid border-light-blue py-2 px-4 bg-transparent transition hover:bg-white hover:text-blue-900 mt-10">
                         Create Room </button>
                 </div>
 
