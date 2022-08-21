@@ -95,7 +95,7 @@ export default class GameBoardView extends Component {
                 y += (this.cellPadding)
                 ctx.beginPath();
                 ctx.rect(x, y, this.state.fontSize, this.state.fontSize);
-                ctx.stroke();
+                // ctx.stroke();
 
                 x = this.offset + (j * this.cellSize);
                 y = this.offset + (i * this.cellSize);
@@ -150,23 +150,38 @@ export default class GameBoardView extends Component {
     }
 
     getCenterPoint = (cell) => {
-        const x = this.offset + ((cell.column) * this.cellSize) + (this.cellSize/2)
-        const y = this.offset + ((cell.row) * this.cellSize)+ (this.cellSize/2)
+        const x = this.offset + ((cell.column) * this.cellSize) + (this.cellSize / 2)
+        const y = this.offset + ((cell.row) * this.cellSize) + (this.cellSize / 2)
         return {x, y}
     }
 
     drawLineBetweenPoints = (point1, point2, color) => {
 
-        const slope = Math.atan((point2.y-point1.y)/(point2.x - point1.x))
-        let X1 = point1.x + ((this.state.fontSize/2) * Math.sin(slope))
-        let Y1 = point1.y - ((this.state.fontSize/2) * Math.cos(slope))
+        const slope = Math.atan((point2.y - point1.y) / (point2.x - point1.x))
+        let X1 = point1.x + ((this.state.fontSize / 2) * Math.sin(slope))
+        let Y1 = point1.y - ((this.state.fontSize / 2) * Math.cos(slope))
 
-        const dist = Math.sqrt(Math.pow((point2.y - point1.y), 2) + Math.pow((point2.x - point1.x), 2) )
+        const dist = Math.sqrt(Math.pow((point2.y - point1.y), 2) + Math.pow((point2.x - point1.x), 2))
+        const start = slope + (Math.PI/2)
+        const end = slope + (Math.PI * 1.5)
 
         let ctx = this.overlay_canvas.getContext("2d");
+
+        ctx.beginPath();
+        ctx.fillStyle = color;
+        ctx.arc( point1.x, point1.y,  (this.state.fontSize/2), start, end);
+        ctx.fill()
+
+        ctx.beginPath();
+        ctx.fillStyle = color;
+        ctx.arc( point2.x, point2.y,  (this.state.fontSize/2), start, end, true);
+        ctx.fill()
+
+        ctx.beginPath();
+        ctx.fillStyle = color;
+        ctx.fill()
         ctx.translate(X1, Y1)
         ctx.rotate(slope)
-        ctx.fillStyle = color;
         ctx.fillRect(0, 0, dist, this.state.fontSize);
         ctx.resetTransform();
 
@@ -185,9 +200,14 @@ export default class GameBoardView extends Component {
         this.drawLineBetweenCells(
             {row: 2, column: 2},
             {row: 4, column: 4},
-            "#f0f"
+            this.color_service.get_random()
         )
-        
+        this.drawLineBetweenCells(
+            {row: 4, column: 1},
+            {row: 1, column: 4},
+            this.color_service.get_random()
+        )
+
 
         this.boardSubmissions.forEach((submission) => {
             this.drawLineBetweenCells(

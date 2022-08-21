@@ -9,16 +9,16 @@ export class ColorGenerationService {
     }
 
     get_random = () => {
-        var letters = '89ABCD'.split('');
-        var color = '#';
-        for (var i = 0; i < 6; i++) {
-            color += letters[Math.floor(Math.random() * letters.length)];
-        }
-        return color;
+        // const r = Math.floor(Math.random() * 190);
+        // const g = Math.floor(Math.random() * 190);
+        // const b = Math.floor(Math.random() * 190);
+        // return `rgba(${r}, ${g}, ${b}, 0.5)`
+        const number = (Math.random() * 360)
+        return 'hsla(' + number + ', 100%, 40%, 0.6)';
     }
 
     getColorForUser = (id) => {
-        if(this.colorsForUsers.hasOwnProperty(id) === false){
+        if (this.colorsForUsers.hasOwnProperty(id) === false) {
             this.colorsForUsers[id] = this.get_random()
         }
         return this.colorsForUsers[id]
