@@ -1,6 +1,7 @@
 import {Component} from "react";
 import './game-board-view.css'
 import {ColorGenerationService} from "../../../services/color-generation";
+import colors from "tailwindcss/colors";
 
 
 export default class GameBoardView extends Component {
@@ -48,16 +49,19 @@ export default class GameBoardView extends Component {
         this.lineSize = this.N * this.cellSize
         this.boardSize = this.lineSize + (2 * this.offset);
 
+        let ctx = this.board_canvas.getContext("2d");
+        ctx.clearRect(0, 0, this.board_canvas.width, this.board_canvas.height);
+
+
     }
 
     drawGameBoard = () => {
         // reset the board
         this.board_canvas.width = this.boardSize
         this.board_canvas.height = this.boardSize
-        this.overlay_canvas.width = this.boardSize
-        this.overlay_canvas.height = this.boardSize
 
         let ctx = this.board_canvas.getContext("2d");
+
         // row lines
         if (this.state.drawLines) {
             for (let i = 0; i <= this.N; ++i) {
@@ -87,11 +91,11 @@ export default class GameBoardView extends Component {
             for (let j = 0; j < this.N; ++j) {
                 let x = this.offset + (j * this.cellSize);
                 let y = this.offset + (i * this.cellSize);
-                x += (this.cellSize)
-                y += (this.cellSize)
+                x += (this.cellPadding)
+                y += (this.cellPadding)
                 ctx.beginPath();
                 ctx.rect(x, y, this.state.fontSize, this.state.fontSize);
-                //ctx.stroke();
+                ctx.stroke();
 
                 x = this.offset + (j * this.cellSize);
                 y = this.offset + (i * this.cellSize);
@@ -108,9 +112,16 @@ export default class GameBoardView extends Component {
 
     }
 
+    setOverlayContext = () => {
+        this.lineFactor = 0.7071067811865475 * this.cellSize
+        let ctx = this.overlay_canvas.getContext('2d')
+        ctx.clearRect(0, 0, this.board_canvas.width, this.board_canvas.height);
+    }
+
     componentDidMount() {
         this.setBoardContext()
         this.drawGameBoard()
+        this.setOverlayContext()
         this.drawSubmissions()
     }
 
@@ -138,26 +149,48 @@ export default class GameBoardView extends Component {
         }
     }
 
-    getPoint = (point) => {
-        const x = this.cellPadding + ((point.column + 1) * this.cellSize)
-        const y = this.cellPadding + ((point.row + 1) * this.cellSize)
+    getCenterPoint = (cell) => {
+        const x = this.offset + ((cell.column) * this.cellSize) + (this.cellSize/2)
+        const y = this.offset + ((cell.row) * this.cellSize)+ (this.cellSize/2)
         return {x, y}
     }
 
-    drawRectangleLine = (x, y, w, h, r) => {
+    drawLineBetweenPoints = (point1, point2, color) => {
+
+        const slope = Math.atan((point2.y-point1.y)/(point2.x - point1.x))
+        let X1 = point1.x + ((this.state.fontSize/2) * Math.sin(slope))
+        let Y1 = point1.y - ((this.state.fontSize/2) * Math.cos(slope))
+
+        const dist = Math.sqrt(Math.pow((point2.y - point1.y), 2) + Math.pow((point2.x - point1.x), 2) )
+
         let ctx = this.overlay_canvas.getContext("2d");
+        ctx.translate(X1, Y1)
+        ctx.rotate(slope)
+        ctx.fillStyle = color;
+        ctx.fillRect(0, 0, dist, this.state.fontSize);
+        ctx.resetTransform();
 
     }
 
-    drawLine = (point1, point2, color) => {
-        const cell1 = this.getPoint(point1)
-        const cell2 = this.getPoint(point2)
-        // this.drawRectangleLine(cell1.x, cell1.y, cell2.x, cell2.y, color)
+    drawLineBetweenCells = (cell1, cell2, color) => {
+        const point1 = this.getCenterPoint(cell1)
+        const point2 = this.getCenterPoint(cell2)
+        this.drawLineBetweenPoints(point1, point2, color)
     }
 
     drawSubmissions = () => {
+        this.overlay_canvas.width = this.boardSize
+        this.overlay_canvas.height = this.boardSize
+
+        this.drawLineBetweenCells(
+            {row: 2, column: 2},
+            {row: 4, column: 4},
+            "#f0f"
+        )
+        
+
         this.boardSubmissions.forEach((submission) => {
-            this.drawLine(
+            this.drawLineBetweenCells(
                 {
                     row: submission.submission_data['row1'],
                     column: submission.submission_data['column1']
@@ -194,9 +227,9 @@ export default class GameBoardView extends Component {
                 {/*    <button onClick={this.draw}> Redraw </button>*/}
                 {/*</div>*/}
                 <div className={"canvas-elements"}>
-                    <canvas id="overlay" className={"canvas-overlay"}>
-                    </canvas>
                     <canvas id="boardData" onMouseDown={this.onCanvasMouseDown} onMouseUp={this.onCanvasMouseUp}>
+                    </canvas>
+                    <canvas id="overlay" className={"canvas-overlay"}>
                     </canvas>
                 </div>
             </div>

@@ -1,5 +1,4 @@
 import React from 'react'
-import {GameBoardApi} from "../../../services/game-board-api";
 import {CategoryApi} from "../../../services/category-api";
 
 import './game-board-create-view.css'

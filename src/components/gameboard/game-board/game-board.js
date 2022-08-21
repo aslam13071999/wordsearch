@@ -22,12 +22,12 @@ export class GameBoard extends Component {
 
 
     createBoard = async (category, board_size, difficulty) => {
-        const response = await this.gameboard_api.createBoard(
+        await this.gameboard_api.createBoard(
             this.room_id,
             category,
             board_size,
             difficulty
-        )
+        );
         this.setState({
             have_board: true,
             board_id: null,
