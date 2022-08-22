@@ -4,10 +4,15 @@ import './game-board-dictionary.css'
 export class GameBoardDictionary extends Component {
     constructor(props) {
         super(props)
+        console.log("GameBoardDictionary.constructor")
         this.setAttributesFromProps()
+        this.state = {
+            dictionary: this.getDictionaryWithSolveStatus()
+        }
     }
 
     getDictionaryWithSolveStatus = () => {
+        console.log("GameBoardDictionary.getDictionaryWithSolveStatus")
         const submission_words = []
         this.board_submissions.forEach((submission) => {
             submission_words.push(submission['submission_data']['word'])
@@ -31,8 +36,13 @@ export class GameBoardDictionary extends Component {
     }
 
     componentDidUpdate(prevProps, prevState, snapshot) {
-        console.log("GameBoardDictionary.componentDidUpdate")
-        this.setAttributesFromProps()
+        if(prevProps.board_submissions.length != this.props.board_submissions.length){
+            console.log("GameBoardDictionary.componentDidUpdate")
+            this.setAttributesFromProps()
+            this.setState({
+                dictionary: [...this.getDictionaryWithSolveStatus()]
+            })
+        }
     }
 
     render = () => {

@@ -13,7 +13,7 @@ export default class GameBoardView extends Component {
         this.color_service = new ColorGenerationService()
         this.authentication_service = new AuthenticationService()
         this.game_board_api = new GameBoardApi()
-        
+
         this.setAttributesFromProps(this.props)
 
         this.state = {
@@ -21,13 +21,14 @@ export default class GameBoardView extends Component {
             fontFamily: "ubuntu",
             fontColor: "black",
             selectionMode: "drag", // drag, tap
-            drawLines: true
+            drawLines: true,
+            is_solved: false
         }
 
         this.start_cell = null
         this.last_mouse_over_cell = null
     }
-    
+
     setAttributesFromProps = () => {
         this.roomId = this.props.room_id
         this.boardId = this.props.board_id
@@ -43,7 +44,7 @@ export default class GameBoardView extends Component {
     changeSelectionMode = (e) => this.setState({selectionMode: e.target.value})
 
     componentDidMount = () => {
-        console.log("didmount")
+        console.debug("GameBoardView.componentDidMount")
         this.setBoardContext()
         this.drawGameBoard()
         this.setSubmissionsOverlayContext()
@@ -54,7 +55,7 @@ export default class GameBoardView extends Component {
     componentDidUpdate(prevProps, prevState, snapshot) {
         this.setAttributesFromProps()
         if (this.props.board_submissions.length != prevProps.board_submissions.length) {
-            console.log("rerendering canvas")
+            console.debug("GameBoardView.componentDidUpdate")
             this.setBoardContext()
             this.drawGameBoard()
             this.setSubmissionsOverlayContext()
@@ -66,6 +67,7 @@ export default class GameBoardView extends Component {
 
 
     setBoardContext = () => {
+        console.debug("GameBoardView.setBoardContext")
 
         this.board_canvas = document.getElementById("boardData")
 
@@ -85,7 +87,7 @@ export default class GameBoardView extends Component {
 
     drawGameBoard = () => {
         // reset the board
-        console.log("drawing board")
+        console.debug("GameBoardView.drawGameBoard")
         this.board_canvas.width = this.boardSize
         this.board_canvas.height = this.boardSize
 
@@ -142,6 +144,7 @@ export default class GameBoardView extends Component {
     }
 
     setSubmissionsOverlayContext = () => {
+        console.debug("GameBoardView.setSubmissionsOverlayContext")
         this.submission_overlay = document.getElementById("submission_overlay")
         this.submission_overlay.width = this.boardSize
         this.submission_overlay.height = this.boardSize
@@ -149,16 +152,19 @@ export default class GameBoardView extends Component {
     }
 
     setDrawOverlayContext = () => {
+        console.debug("GameBoardView.setDrawOverlayContext")
         this.draw_overlay = document.getElementById("draw_overlay")
         this.draw_overlay.width = this.boardSize
         this.draw_overlay.height = this.boardSize
     }
 
     resetDrawOverlay = () => {
+        console.debug("GameBoardView.resetDrawOverlay")
         this.draw_overlay.width = this.boardSize
     }
 
     drawLineBetweenPoints = (canvas, point1, point2, color) => {
+        console.debug("GameBoardView.drawLineBetweenPoints")
         if (point2.x + this.cellSize - this.cellPadding <= point1.x) {
             let tmp = point1
             point1 = point2
@@ -196,14 +202,14 @@ export default class GameBoardView extends Component {
     }
 
     drawLineBetweenCells = (canvas, cell1, cell2, color) => {
-        console.log("drawLineBetweenPoints ");
+        console.debug("GameBoardView.drawLineBetweenCells")
         const point1 = this.getCenterPoint(cell1)
         const point2 = this.getCenterPoint(cell2)
         this.drawLineBetweenPoints(canvas, point1, point2, color)
     }
 
     drawSubmissions = () => {
-        console.log("drawing submissions")
+        console.debug("GameBoardView.drawSubmissions")
         this.boardSubmissions.forEach((submission) => {
             this.drawLineBetweenCells(
                 this.submission_overlay,
@@ -246,6 +252,7 @@ export default class GameBoardView extends Component {
     }
 
     getWordInSelection = (start_cell, end_cell) => {
+        console.debug("GameBoardView.getWordInSelection")
         let row_offset = 0
         let column_offset = 0
         if (start_cell.row !== end_cell.row) {
@@ -254,12 +261,12 @@ export default class GameBoardView extends Component {
         if (start_cell.column !== end_cell.column) {
             column_offset = start_cell.column < end_cell.column ? 1 : -1;
         }
-        console.log("offsets", row_offset, column_offset)
+        console.debug("offsets", row_offset, column_offset)
         const words_count_in_selection = Math.max(
             Math.abs(start_cell.row - end_cell.row),
             Math.abs(start_cell.column - end_cell.column)
         )
-        console.log("words_count_in_selection", words_count_in_selection)
+        console.debug("words_count_in_selection", words_count_in_selection)
         let chars_in_selection = []
         let cur_row = start_cell.row
         let cur_column = start_cell.column
@@ -272,13 +279,16 @@ export default class GameBoardView extends Component {
     }
 
     isValidSelection = (start_cell, end_cell) => {
+        console.debug("GameBoardView.isValidSelection")
         let is_same_row = start_cell.row === end_cell.row
         let is_same_column = start_cell.column === end_cell.column
         let is_diagonal = Math.abs(start_cell.row - start_cell.column) === Math.abs(end_cell.row - end_cell.column)
-        return is_same_column || is_same_row || is_diagonal
+        let is_reverse_diagonal = (start_cell.row + start_cell.column) === (end_cell.row + end_cell.column)
+        return is_same_column || is_same_row || is_diagonal || is_reverse_diagonal
     }
 
     isValidWord = (selected_word) => {
+        console.debug("GameBoardView.isValidWord")
         let is_word_in_dictionary = false;
         for (let i = 0; i < this.boardDictionary.length; ++i) {
             if (this.boardDictionary[i] === selected_word) is_word_in_dictionary = true;
@@ -288,9 +298,10 @@ export default class GameBoardView extends Component {
 
 
     onCanvasMouseUp = async (e) => {
-        console.log("mouseup", e)
+        console.debug("GameBoardView.onCanvasMouseUp", e)
         let current_cell = this.getEventCell(e)
-        console.log("event happened at ", current_cell)
+        console.debug("GameBoardView.onCanvasMouseUp event triggered at ", current_cell)
+
         this.resetDrawOverlay()
 
         const start_cell = this.start_cell
@@ -299,13 +310,13 @@ export default class GameBoardView extends Component {
 
         const selected_word = this.getWordInSelection(start_cell, current_cell)
 
-        console.log("validating the selection", start_cell, current_cell)
+        console.debug("validating the selection", start_cell, current_cell)
         if (this.isValidSelection(start_cell, current_cell) === false) {
-            console.log("invalid selection area", start_cell, current_cell)
+            console.debug("invalid selection area", start_cell, current_cell)
             return
         }
         if (this.isValidWord(selected_word) === false) {
-            console.log("Invalid word", selected_word)
+            console.debug("Invalid word", selected_word)
             return
         }
 
@@ -315,9 +326,9 @@ export default class GameBoardView extends Component {
     }
 
     onCanvasMouseDown = (e) => {
-        console.log("mousedown", e)
+        console.debug("GameBoardView.onCanvasMouseDown", e)
         let current_cell = this.getEventCell(e)
-        console.log("event happened at ", current_cell)
+        console.debug("GameBoardView.onCanvasMouseDown event triggered at ", current_cell)
         this.start_cell = current_cell
     }
 
@@ -332,9 +343,9 @@ export default class GameBoardView extends Component {
     onMouseOver = (e) => {
         if (this.start_cell == null) return;
         if (this.state.selectionMode !== "drag") return;
-        // console.log("mouseover", e)
+        console.debug("GameBoardView.onMouseOver", e)
         let current_cell = this.getEventCell(e)
-        // console.log("event happened at ", current_cell)
+        console.debug("GameBoardView.onMouseOver event triggered at ", current_cell)
         if (this.compareEqual(current_cell, this.start_cell)) return;
         if (this.compareEqual(this.last_mouse_over_cell, current_cell)) return;
         this.resetDrawOverlay()
@@ -345,8 +356,17 @@ export default class GameBoardView extends Component {
         this.last_mouse_over_cell = current_cell
     }
 
+    checkBoardSolved = () => {
+        console.debug("GameBoardView.checkBoardSolved")
+        if(this.boardSubmissions === this.boardDictionary.length){
+            console.info("board is solved")
+            return true;
+        }
+        return false
+    }
+
     render = () => {
-        console.log("gameboardview renders");
+        console.debug("GameBoardView.render")
         return (
             <div>
 
