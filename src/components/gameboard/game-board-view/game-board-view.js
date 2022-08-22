@@ -9,16 +9,12 @@ export default class GameBoardView extends Component {
 
     constructor(props) {
         super(props);
-        this.roomId = this.props.room_id
-        this.boardId = this.props.board_id
-        this.boardData = this.props.board_data
-        this.boardDictionary = this.props.board_dictionary
-        this.boardSubmissions = this.props.board_submissions
-        this.addSubmission = this.props.submission_callback
 
         this.color_service = new ColorGenerationService()
         this.authentication_service = new AuthenticationService()
         this.game_board_api = new GameBoardApi()
+        
+        this.setAttributesFromProps(this.props)
 
         this.state = {
             fontSize: 32,
@@ -31,6 +27,15 @@ export default class GameBoardView extends Component {
         this.start_cell = null
         this.last_mouse_over_cell = null
     }
+    
+    setAttributesFromProps = () => {
+        this.roomId = this.props.room_id
+        this.boardId = this.props.board_id
+        this.boardData = this.props.board_data
+        this.boardDictionary = this.props.board_dictionary
+        this.boardSubmissions = this.props.board_submissions
+        this.addSubmission = this.props.submission_callback
+    }
 
     changeFontSize = (e) => this.setState({fontSize: parseInt(e.target.value)})
     changeFontColor = (e) => this.setState({fontColor: e.target.value})
@@ -42,12 +47,20 @@ export default class GameBoardView extends Component {
         this.setBoardContext()
         this.drawGameBoard()
         this.setSubmissionsOverlayContext()
-        this.drawSubmissions()
+        this.drawSubmissions(this.props.board_submissions)
         this.setDrawOverlayContext()
     }
+
     componentDidUpdate(prevProps, prevState, snapshot) {
-        if(this.props.board_submissions.length != prevProps.board_submissions.length){
-          console.log("didupdate");
+        this.setAttributesFromProps()
+        if (this.props.board_submissions.length != prevProps.board_submissions.length) {
+            console.log("rerendering canvas")
+            this.setBoardContext()
+            this.drawGameBoard()
+            this.setSubmissionsOverlayContext()
+            this.drawSubmissions()
+            this.resetDrawOverlay()
+            this.setDrawOverlayContext()
         }
     }
 
@@ -68,15 +81,11 @@ export default class GameBoardView extends Component {
 
         this.lineSize = this.N * this.cellSize
         this.boardSize = this.lineSize + (2 * this.offset);
-
-        let ctx = this.board_canvas.getContext("2d");
-        ctx.clearRect(0, 0, this.board_canvas.width, this.board_canvas.height);
-
-
     }
 
     drawGameBoard = () => {
         // reset the board
+        console.log("drawing board")
         this.board_canvas.width = this.boardSize
         this.board_canvas.height = this.boardSize
 
@@ -194,6 +203,7 @@ export default class GameBoardView extends Component {
     }
 
     drawSubmissions = () => {
+        console.log("drawing submissions")
         this.boardSubmissions.forEach((submission) => {
             this.drawLineBetweenCells(
                 this.submission_overlay,
@@ -341,10 +351,10 @@ export default class GameBoardView extends Component {
             <div>
 
                 <div style={{marginTop: "40px"}}>
-                    Font Size: <input type={"number"} onChange={this.changeFontSize} value={this.state.fontSize} />
-                    Font Color: <input type={"text"} onChange={this.changeFillColor} value={this.state.fillColor} />
-                    Font Family: <input type={"text"} onChange={this.changeFontFamily} value={this.state.fontFamily} />
-                    <button onClick={this.draw}> Redraw </button>
+                    Font Size: <input type={"number"} onChange={this.changeFontSize} value={this.state.fontSize}/>
+                    Font Color: <input type={"text"} onChange={this.changeFillColor} value={this.state.fillColor}/>
+                    Font Family: <input type={"text"} onChange={this.changeFontFamily} value={this.state.fontFamily}/>
+                    <button onClick={this.draw}> Redraw</button>
                 </div>
                 <div className={"canvas-elements"}>
                     <canvas id="draw_overlay" className={"canvas-overlay"}
