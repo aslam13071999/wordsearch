@@ -27,9 +27,10 @@ export class GameBoardDictionary extends Component {
             }
         })
         let dictionary = []
-        dictionary_unsolved.forEach(item => dictionary.push(item))
-        dictionary_solved.forEach(item => dictionary.push(item))
-
+        if (dictionary_unsolved.length > 0) {
+            dictionary_unsolved.forEach(item => dictionary.push(item))
+            dictionary_solved.forEach(item => dictionary.push(item))
+        }
         return dictionary
     }
 
@@ -51,26 +52,33 @@ export class GameBoardDictionary extends Component {
 
     render = () => {
         console.log("GameBoardDictionary.render")
-        return (
-            <div>
-                <div className={"text-center md:mt-2 lg:mt-6 md:mx-3 border-2 border-gray lg:mx-12 py-1 font-semibold dark:border-dark-primary"}>
-                    All Words
-                </div>
-                <div className={"flex justify-center items-center h-full"}>
-                    <div className={"grid grid-cols-1 md:my-2 lg:my-7  sm:mx-2 mx-14 "}>
-                        {
-                            this.state.dictionary.map((row) => {
-                                return (
-                                    <div key={row.word}
-                                         className={`text-center mx-1 lg:font-bold mx-16 md:py-0.5 lg:py-2 border-gray-300 dark:border-gray-800 ${row.solved ? "text-green-400" : ""}`}>
-                                        {row.word}
-                                    </div>
-                                )
-                            })
-                        }
+        if (this.state.dictionary.length > 0) {
+            return (
+                <div>
+                    <div className={"text-center font-semibold " +
+                        " py-1" +
+                        " md:mt-2 lg:mt-6 " +
+                        " sm:mx-1 md:mx-3 lg:mx-12" +
+                        " border-2 border-gray dark:border-dark-primary"}>
+                        All Words
+                    </div>
+                    <div className={"flex justify-center items-center h-full"}>
+                        <div className={"grid grid-cols-1 md:my-2 lg:my-7  sm:mx-2 mx-14 "}>
+                            {
+                                this.state.dictionary.map((row) => {
+                                    return (
+                                        <div key={row.word}
+                                             className={`text-center mx-1 lg:font-bold mx-16 md:py-0.5 lg:py-2 border-gray-300 dark:border-gray-800 ${row.solved ? "text-green-400" : ""}`}>
+                                            {row.word}
+                                        </div>
+                                    )
+                                })
+                            }
+                        </div>
                     </div>
                 </div>
-            </div>
-        )
+            )
+        }
+
     }
 }

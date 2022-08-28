@@ -8,9 +8,13 @@ class HomePage extends React.Component {
         return (
             <div className="bg-light-bg-color dark:bg-dark-bg-color text-light-fg-color dark:text-dark-fg-color">
                 <Header/>
-                <div className="flex flex-col justify-center items-center w-full h-full">
-                    <div className="text-[30px] link-hover mb-5"><Link to={"/room"}> Rooms </Link> </div>
-                    <div className="text-[30px]	link-hover"><Link to={"/categories"}> Categories </Link> </div>
+                <div className="flex h-screen justify-center items-center">
+                    <div className={"grid grid-cols-1"}>
+                        <div className="text-2xl link-hover mb-5 w-full text-center"><Link to={"/room"}> Rooms </Link>
+                        </div>
+                        <div className="text-2xl link-hover w-full text-center"><Link
+                            to={"/categories"}> Categories </Link></div>
+                    </div>
                 </div>
             </div>
         );

@@ -29,7 +29,7 @@ export default class GameBoardView extends Component {
         this.start_cell = null
         this.last_mouse_over_cell = null
         this.paddingFactor = 0.4
-        this.offsetFactor = 1
+        this.offsetFactor = 0.2
 
     }
 
@@ -92,7 +92,7 @@ export default class GameBoardView extends Component {
             ...this.state,
             windowWidth: window.innerWidth,
             windowHeight: window.innerHeight,
-            selectionMode: (window.innerWidth <= 1024 ? "tap" : "drag"),
+            // selectionMode: (window.innerWidth <= 1024 ? "tap" : "drag"),
             fontSize: fontSize,
             isDrawable: fontSize !== -1
         });
@@ -148,13 +148,15 @@ export default class GameBoardView extends Component {
     }
 
     drawEverything = () => {
-        console.debug("GameBoardView.componentDidMount")
-        this.setBoardContext()
-        this.setSubmissionsOverlayContext()
-        this.setDrawOverlayContext()
-        this.resetDrawOverlay()
-        this.drawGameBoard()
-        this.drawSubmissions()
+        console.debug("GameBoardView.drawEverything")
+        if(this.state.isDrawable && !this.state.isSolved){
+            this.setBoardContext()
+            this.setSubmissionsOverlayContext()
+            this.setDrawOverlayContext()
+            this.resetDrawOverlay()
+            this.drawGameBoard()
+            this.drawSubmissions()
+        }
     }
 
 
@@ -468,6 +470,57 @@ export default class GameBoardView extends Component {
             this.color_service.getColorForUser("asif"))
         this.last_mouse_over_cell = current_cell
     }
+    onTouchStart = (e) => {
+        e.preventDefault()
+        const touch = e.changedTouches[0]
+        touch.target.dispatchEvent(
+            new MouseEvent(
+                'mousedown', {
+                    'view': e.target.ownerDocument.defaultView,
+                    'bubbles': true,
+                    'cancelable': true,
+                    'screenX': touch.screenX,
+                    'screenY': touch.screenY,
+                    'clientX': touch.clientX,
+                    'clientY': touch.clientY,
+                }
+            )
+        )
+    }
+    onTouchMove = (e) => {
+        e.preventDefault()
+        const touch = e.changedTouches[0]
+        touch.target.dispatchEvent(
+            new MouseEvent(
+                'mousemove', {
+                    'view': e.target.ownerDocument.defaultView,
+                    'bubbles': true,
+                    'cancelable': true,
+                    'screenX': touch.screenX,
+                    'screenY': touch.screenY,
+                    'clientX': touch.clientX,
+                    'clientY': touch.clientY,
+                }
+            )
+        )
+    }
+    onTouchEnd = (e) => {
+        e.preventDefault()
+        const touch = e.changedTouches[0]
+        touch.target.dispatchEvent(
+            new MouseEvent(
+                'mouseup', {
+                    'view': e.target.ownerDocument.defaultView,
+                    'bubbles': true,
+                    'cancelable': true,
+                    'screenX': touch.screenX,
+                    'screenY': touch.screenY,
+                    'clientX': touch.clientX,
+                    'clientY': touch.clientY,
+                }
+            )
+        )
+    }
 
     updateBoardSolved = () => {
         console.debug("GameBoardView.checkBoardSolved")
@@ -513,7 +566,11 @@ export default class GameBoardView extends Component {
                         <canvas id="submission_overlay" className={"canvas-overlay"}
                                 onMouseDown={this.onCanvasMouseDown}
                                 onMouseUp={this.onCanvasMouseUp}
-                                onMouseMove={this.onMouseOver}>
+                                onMouseMove={this.onMouseOver}
+                                onTouchStart={this.onTouchStart}
+                                onTouchMove={this.onTouchMove}
+                                onTouchEnd={this.onTouchEnd}
+                        >
                         </canvas>
                         <canvas id="boardData">
                         </canvas>

@@ -41,16 +41,21 @@ export class GameBoardLeaderboard extends Component {
         console.log("GameBoardLeaderboard.render")
         return (
             <div>
-                <div
-                    className={"text-center md:mt-2 lg:mt-6 border-2 border-gray md:mx-3 lg:mx-12 py-1 font-semibold dark:border-dark-primary"}>
+                <div className={"text-center font-semibold " +
+                    " py-1" +
+                    " md:mt-2 lg:mt-6 " +
+                    " sm:mx-1 md:mx-3 lg:mx-12" +
+                    " border-2 border-gray dark:border-dark-primary"}>
                     Submissions
                 </div>
                 <div className={"grid grid-cols-1 lg:mx-5 my-2 lg:p-4"}>
                     {
                         this.state.board_submissions.map((submission, index) => {
                             return (
-                                <div className={`mx-4  rounded-md ${index === -1 ? 'bg-green-500': ''}`} key={submission.user}>
-                                    <div className={`float-left uppercase align-middle mg:mx-1 lg:mx-3 lg:font-semibold font-robo`}>
+                                <div className={`mx-4  rounded-md ${index === -1 ? 'bg-green-500' : ''}`}
+                                     key={submission.user}>
+                                    <div
+                                        className={`float-left uppercase align-middle mg:mx-1 lg:mx-3 lg:font-semibold font-robo`}>
                                         {submission.user}
                                     </div>
                                     <div
