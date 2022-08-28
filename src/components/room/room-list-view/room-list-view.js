@@ -34,11 +34,15 @@ class RoomListView extends Component {
         return (
             <div>
                 <div className="text-center mt-3 mb-8">
-                    <button onClick={this.createRoom}  className="border-2 border-solid border-light-blue py-2 px-4 bg-transparent transition hover:bg-white hover:text-blue-900 mt-10">
+                    <button onClick={this.createRoom}  className="
+                    mt-10 py-2 px-4 border-2 border-solid
+                    border-light-primary hover:border-light-fg-color bg-transparent
+                    text-light-fg-color dark:text-dark-fg-color hover:dark:bg-dark-primary hover:dark:text-dark-bg-color
+                    ">
                         Create Room </button>
                 </div>
 
-                <div style={{display: "flex", flexWrap: "wrap", justifyContent: "space-around", alignContent: "space-around"}}>
+                <div className="grid lg:grid-cols-5 md:grid-cols-2 sm:grid-cols-1 gap-y-4 md:px-10 lg:px-20 justify-center content-center">
                     {
                         this.state.rooms !== null && this.state.rooms.map((room_data,roomNum) => {
                             return(

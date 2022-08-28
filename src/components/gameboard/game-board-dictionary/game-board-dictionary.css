@@ -1,8 +1,17 @@
 .dictionary-item{
-    padding: 5px;
     text-align: center;
+    width: 100%;
+    padding: 10px
 }
 
 .solved{
     background-color: green;
+}
+
+.dictionary-list{
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
 }

@@ -1,4 +1,6 @@
 @import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@100;200;300;400;500;600;700;800;900&display=swap");
+@import url('https://fonts.googleapis.com/css2?family=DynaPuff:wght@500&family=Russo+One&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Exo+2:wght@400;600&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -13,21 +15,18 @@
      sans-serif;
      -webkit-font-smoothing: antialiased;
      -moz-osx-font-smoothing: grayscale;
-      width: 100%;
-       height: auto;
    }
  }
 
 @layer components{
     .boxShadow{
-
-        @apply dark:shadow-light-gr-800 shadow-light-br-color shadow-lg;
-    }
-    .link-hover{
-        @apply relative uppercase font-medium before:bg-light-secondary dark:before:bg-light-primary before:rounded-bl before:-bottom-1.5 before:h-0.5 before:inset-x-0 before:absolute before:transform before:origin-left before:scale-x-0 before:transition-all before:duration-200 hover:before:scale-x-100;
+        @apply dark:bg-dark-fg-color bg-light-fg-color shadow-lg;
     }
 }
 
+.link-hover{
+    @apply relative uppercase font-medium before:bg-light-primary dark:before:bg-dark-primary before:rounded-bl before:-bottom-1.5 before:h-0.5 before:inset-x-0 before:absolute before:transform before:origin-left before:scale-x-0 before:transition-all before:duration-200 hover:before:scale-x-100;
+}
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;

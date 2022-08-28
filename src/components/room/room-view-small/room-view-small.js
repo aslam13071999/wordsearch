@@ -13,21 +13,25 @@ export default class RoomViewSmall extends Component {
 
     }
 
-    oncopy=(e)=>{
+    oncopy = (e) => {
         console.log("copy",);
         e.preventDefault();
-        console.log("copy",e.clipboardData.getData ("Text"));
+        console.log("copy", e.clipboardData.getData("Text"));
         window.clipboardData.setData("Text", "https://tailwindcss.com/");
         this.setState({
-            copied:true
+            copied: true
         })
     }
 
     render = () => {
-        console.log("coped",this.state.copied)
+        console.log("coped", this.state.copied)
         return (
-            <div className="w-[300px] relative h-[300px] bg-white m-[10px] rounded-md
-              border-t-4 border-light-blue border shadow-lg hover:shadow-dark-primary">
+            <div
+                className="w-[300px] relative h-[300px] m-[10px]
+                bg-light-bg-color dark:bg-dark-bg-color
+                rounded-md border-t-4 border shadow-lg
+                border-gray-200 dark:border-gray-800
+                hover:shadow-gray-200 ">
                 <div className="pt-3 px-4">
                     <div className="text-right opacity-[0.5] hover:opacity-[1] inline-block cursor-pointer">
                         <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20"
@@ -41,7 +45,7 @@ export default class RoomViewSmall extends Component {
                         <div className='flex justify-between my-2 items-center'>
                             <div>Team Players</div>
                             <div
-                                className='bg-light-blue text-light-primary rounded-full w-8 h-8 flex items-center justify-center'>
+                                className='bg-light-primary text-light-fg-color rounded-full w-8 h-8 flex items-center justify-center'>
                                 <p>4</p></div>
                         </div>
                         <div className='flex justify-between mb-2'>
@@ -54,29 +58,40 @@ export default class RoomViewSmall extends Component {
                         </div>
                         <div className="flex mb-2"><a href="#" className="mr-2">link to join
 
-                        </a> <button onClick={(e)=>this.oncopy(e)} className="hover:text-light-blue">
-                            {this.state.copied?<svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                            </svg>:<svg xmlns="http://www.w3.org/2000/svg"
-                                  className="h-6 w-6"
-                                  fill="none" viewBox="0 0 24 24" stroke="currentColor"
-                                  strokeWidth={2}>
-                                <path strokeLinecap="round" strokeLinejoin="round"
-                                      d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/>
-                            </svg>
-                            }</button></div>
-
+                        </a>
+                            <button onClick={(e) => this.oncopy(e)} className="hover:text-light-blue">
+                                {this.state.copied ?
+                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20"
+                                         fill="currentColor">
+                                        <path fillRule="evenodd"
+                                              d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                                              clipRule="evenodd"/>
+                                    </svg> : <svg xmlns="http://www.w3.org/2000/svg"
+                                                  className="h-6 w-6"
+                                                  fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                                                  strokeWidth={2}>
+                                        <path strokeLinecap="round" strokeLinejoin="round"
+                                              d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/>
+                                    </svg>
+                                }</button>
+                        </div>
 
 
                         {/*<div> <b style={{float: "left"}}> {this.props.username} </b> <i style={{float: "right"}}>({this.props.email})</i> </div>*/}
                     </div>
                 </div>
 
-                <div
-                    className="absolute bottom-0 text-center w-[100%] bg-light-blue text-light-primary
-                    rounded-b px-4 py-4">
-                    <Link to={"/room/" + this.props.room_id}><b>Enter the Room </b> </Link>
-                </div>
+                <Link to={"/room/" + this.props.room_id}>
+                    <div
+                        className="absolute bottom-0 text-center w-full
+                    bg-light-primary text-light-bg-color
+                    dark:bg-dark-primary dark:text-dark-fg-color
+                    hover:bg-light-fg-color
+                    hover:dark:bg-dark-fg-color hover:dark:text-dark-bg-color
+                    rounded-b p-4">
+                        <b>Enter the Room </b>
+                    </div>
+                </Link>
             </div>
         )
     }

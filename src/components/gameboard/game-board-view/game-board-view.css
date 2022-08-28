@@ -36,3 +36,9 @@
 .boardData {
     z-index: 2;
 }
+
+.canvas-elements{
+    display: flex;
+    align-content: center;
+    justify-content: center;
+}

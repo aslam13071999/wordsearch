@@ -1,8 +1,7 @@
 import {Component} from "react";
 import './game-board-view.css'
-import {ColorGenerationService} from "../../../services/color-generation";
-import {AuthenticationService} from "../../../services/authentication";
-import {GameBoardApi} from "../../../services/game-board-api";
+import {themeService} from "../../../services/theme";
+import {themeChangeEventSubscriber} from "../../../services/subscriber";
 
 
 export default class GameBoardView extends Component {
@@ -10,59 +9,152 @@ export default class GameBoardView extends Component {
     constructor(props) {
         super(props);
 
-        this.color_service = new ColorGenerationService()
-        this.authentication_service = new AuthenticationService()
-        this.game_board_api = new GameBoardApi()
+        this.color_service = new themeService()
+        new themeChangeEventSubscriber().addSubscriber(this.updateThemeState)
 
         this.setAttributesFromProps(this.props)
 
         this.state = {
             fontSize: 32,
             fontFamily: "ubuntu",
-            fontColor: "black",
+            fontColor: this.color_service.getFGColor(),
             selectionMode: "drag", // drag, tap
             drawLines: true,
-            is_solved: false
+            isSolved: this.props.is_solved,
+            windowWidth: 0,
+            windowHeight: 0,
+            isDrawable: false
         }
 
         this.start_cell = null
         this.last_mouse_over_cell = null
+        this.paddingFactor = 0.4
+        this.offsetFactor = 1
+
     }
 
     setAttributesFromProps = () => {
-        this.roomId = this.props.room_id
-        this.boardId = this.props.board_id
         this.boardData = this.props.board_data
         this.boardDictionary = this.props.board_dictionary
         this.boardSubmissions = this.props.board_submissions
         this.addSubmission = this.props.submission_callback
+        this.postSolveCallback = this.props.post_solving_callback
     }
 
-    changeFontSize = (e) => this.setState({fontSize: parseInt(e.target.value)})
-    changeFontColor = (e) => this.setState({fontColor: e.target.value})
-    changeFontFamily = (e) => this.setState({fontFamily: e.target.value})
-    changeSelectionMode = (e) => this.setState({selectionMode: e.target.value})
+
+    updateFontSize = (size) => {
+        this.setState({
+            ...this.state,
+            fontSize: size
+        })
+    }
+
+    updateFontColor = (color) => {
+        this.setState({
+            ...this.state,
+            fontColor: color
+        })
+    }
+
+    updateFontFamily = (family) => {
+        this.setState({
+            ...this.state,
+            fontFamily: family
+        })
+    }
+    updateSelectionMode = (mode) => {
+        this.setState({
+            ...this.state,
+            selectionMode: mode
+        })
+    }
+
+
+    changeFontSize = (e) => this.updateFontSize(parseInt(e.target.value))
+    changeFontColor = (e) => this.updateFontColor(e.target.value)
+    changeFontFamily = (e) => this.updateFontFamily(e.target.value)
+    changeSelectionMode = (e) => this.updateSelectionMode(e.target.value)
 
     componentDidMount = () => {
         console.debug("GameBoardView.componentDidMount")
-        this.setBoardContext()
-        this.drawGameBoard()
-        this.setSubmissionsOverlayContext()
-        this.drawSubmissions(this.props.board_submissions)
-        this.setDrawOverlayContext()
+        if (!this.state.isSolved) {
+            if (this.state.isDrawable) {
+                this.drawEverything()
+            }
+            this.updateWindowDimensions();
+            window.addEventListener('resize', this.updateWindowDimensions);
+        }
+    }
+
+    updateWindowDimensions = () => {
+        const fontSize = this.calculateOptimumFontSize(window.innerWidth, window.innerHeight)
+        this.setState({
+            ...this.state,
+            windowWidth: window.innerWidth,
+            windowHeight: window.innerHeight,
+            selectionMode: (window.innerWidth <= 1024 ? "tap" : "drag"),
+            fontSize: fontSize,
+            isDrawable: fontSize !== -1
+        });
+    }
+
+    calculateOptimumFontSize = (width, height) => {
+        const N = this.boardData.length
+        for (let currentFontSize = 40; currentFontSize >= 16; --currentFontSize) {
+            const cellPadding = currentFontSize * this.paddingFactor
+            const cellSize = (cellPadding * 2) + currentFontSize
+            const offset = currentFontSize * this.offsetFactor
+            const fullLineSize = (N * cellSize) + (offset * 2)
+            if (fullLineSize < width && fullLineSize < height) {
+                return currentFontSize
+            }
+        }
+        return -1
+    }
+
+    updateThemeState = (bgColor, textColor) => {
+        console.log(" GameboardView.updateThemeState updating the Theme state")
+        this.setState({
+            ...this.state,
+            fontColor: textColor
+        })
     }
 
     componentDidUpdate(prevProps, prevState, snapshot) {
         this.setAttributesFromProps()
-        if (this.props.board_submissions.length != prevProps.board_submissions.length) {
-            console.debug("GameBoardView.componentDidUpdate")
-            this.setBoardContext()
-            this.drawGameBoard()
-            this.setSubmissionsOverlayContext()
-            this.drawSubmissions()
-            this.resetDrawOverlay()
-            this.setDrawOverlayContext()
+        if (this.props.board_submissions.length !== prevProps.board_submissions.length) {
+            console.debug("GameBoardView.componentDidUpdate due to change in submissions")
+            if (!this.state.isSolved) {
+                this.drawEverything()
+                this.updateBoardSolved()
+            }
         }
+        if (this.state.fontColor !== prevState.fontColor) {
+            console.debug("GameBoardView.componentDidUpdate due to change in color")
+            this.drawEverything()
+        } else if (this.state.fontFamily !== prevState.fontFamily) {
+            console.debug("GameBoardView.componentDidUpdate due to change in font family")
+            this.drawEverything()
+        } else if (this.state.fontSize !== prevState.fontSize) {
+            console.debug("GameBoardView.componentDidUpdate due to change in font size")
+            this.drawEverything()
+        } else if (this.state.isDrawable !== prevState.isDrawable) {
+            console.debug("GameBoardView.componentDidUpdate due to isDrawable")
+            this.drawEverything()
+        } else if (this.state.selectionMode !== prevState.selectionMode) {
+            console.debug("GameBoardView.componentDidUpdate due to selection mode")
+            this.drawEverything()
+        }
+    }
+
+    drawEverything = () => {
+        console.debug("GameBoardView.componentDidMount")
+        this.setBoardContext()
+        this.setSubmissionsOverlayContext()
+        this.setDrawOverlayContext()
+        this.resetDrawOverlay()
+        this.drawGameBoard()
+        this.drawSubmissions()
     }
 
 
@@ -71,8 +163,6 @@ export default class GameBoardView extends Component {
 
         this.board_canvas = document.getElementById("boardData")
 
-        this.paddingFactor = 0.4
-        this.offsetFactor = 1.5
 
         this.cellPadding = this.state.fontSize * this.paddingFactor
         this.cellSize = (this.cellPadding * 2) + this.state.fontSize
@@ -92,7 +182,9 @@ export default class GameBoardView extends Component {
         this.board_canvas.height = this.boardSize
 
         let ctx = this.board_canvas.getContext("2d");
-
+        ctx.fillStyle = this.state.fontColor
+        ctx.strokeStyle = this.state.fontColor
+        console.log("drawing lines with ", this.state.fontColor)
         if (this.state.drawLines) {
             // row lines
             for (let i = 0; i <= this.N; ++i) {
@@ -100,7 +192,6 @@ export default class GameBoardView extends Component {
                 let x2 = this.lineSize + this.offset
                 let y = this.offset + (i * this.cellSize);
                 ctx.beginPath();
-                ctx.fillStyle = this.state.fontColor
                 ctx.moveTo(x1, y);
                 ctx.lineTo(x2, y);
                 ctx.stroke();
@@ -111,7 +202,6 @@ export default class GameBoardView extends Component {
                 let y2 = this.lineSize + this.offset
                 let x = this.offset + (i * this.cellSize);
                 ctx.beginPath();
-                ctx.fillStyle = this.state.fontColor
                 ctx.moveTo(x, y1);
                 ctx.lineTo(x, y2);
                 ctx.stroke();
@@ -134,7 +224,6 @@ export default class GameBoardView extends Component {
                 y += (this.cellSize / 2)
 
                 ctx.font = this.font
-                ctx.fillStyle = this.state.fontColor
                 ctx.textAlign = 'center'
                 ctx.textBaseline = 'middle'
                 ctx.fillText(this.boardData[i][j], x, y)
@@ -198,6 +287,24 @@ export default class GameBoardView extends Component {
         ctx.rotate(slope)
         ctx.fillRect(0, 0, dist, this.state.fontSize);
         ctx.resetTransform();
+
+    }
+
+    highlightCell = (cell, color, canvas) => {
+        const x = this.offset + ((cell.column) * this.cellSize) + (this.cellSize / 2)
+        const y = this.offset + ((cell.row) * this.cellSize) + (this.cellSize / 2)
+        let ctx = canvas.getContext("2d");
+        ctx.fillStyle = color;
+
+        ctx.beginPath();
+        ctx.fillStyle = color;
+        ctx.arc(x, y, (this.state.fontSize * 0.6), 0, 2 * Math.PI, true);
+        ctx.fill()
+
+        // ctx.beginPath();
+        // ctx.translate(x, y)
+        // ctx.fillRect(0, 0, this.cellSize, this.cellSize);
+        // ctx.resetTransform();
 
     }
 
@@ -296,20 +403,26 @@ export default class GameBoardView extends Component {
         return is_word_in_dictionary === true
     }
 
-
     onCanvasMouseUp = async (e) => {
         console.debug("GameBoardView.onCanvasMouseUp", e)
         let current_cell = this.getEventCell(e)
         console.debug("GameBoardView.onCanvasMouseUp event triggered at ", current_cell)
 
+        if (this.state.selectionMode !== "drag") {
+            if (this.start_cell == null) {
+                this.start_cell = current_cell
+                this.highlightCell(current_cell, this.color_service.getColorForUser("asif"), this.draw_overlay)
+                return
+            }
+        }
         this.resetDrawOverlay()
 
         const start_cell = this.start_cell
+
         this.start_cell = null
         this.last_mouse_over_cell = null
 
         const selected_word = this.getWordInSelection(start_cell, current_cell)
-
         console.debug("validating the selection", start_cell, current_cell)
         if (this.isValidSelection(start_cell, current_cell) === false) {
             console.debug("invalid selection area", start_cell, current_cell)
@@ -319,8 +432,6 @@ export default class GameBoardView extends Component {
             console.debug("Invalid word", selected_word)
             return
         }
-
-        // this.drawLineBetweenCells(this.submission_overlay, start_cell, current_cell, this.color_service.get_random())
         await this.addSubmission(start_cell, current_cell, selected_word)
 
     }
@@ -329,7 +440,9 @@ export default class GameBoardView extends Component {
         console.debug("GameBoardView.onCanvasMouseDown", e)
         let current_cell = this.getEventCell(e)
         console.debug("GameBoardView.onCanvasMouseDown event triggered at ", current_cell)
-        this.start_cell = current_cell
+        if (this.state.selectionMode === "drag") {
+            this.start_cell = current_cell
+        }
     }
 
     compareEqual = (cell1, cell2) => {
@@ -356,41 +469,72 @@ export default class GameBoardView extends Component {
         this.last_mouse_over_cell = current_cell
     }
 
-    checkBoardSolved = () => {
+    updateBoardSolved = () => {
         console.debug("GameBoardView.checkBoardSolved")
-        if(this.boardSubmissions === this.boardDictionary.length){
+        if (this.boardSubmissions.length === this.boardDictionary.length) {
+            this.setState({
+                ...this.state,
+                isSolved: true
+            })
             console.info("board is solved")
-            return true;
         }
-        return false
+    }
+
+    closeBoard = () => {
+        this.postSolveCallback()
     }
 
     render = () => {
         console.debug("GameBoardView.render")
+        if (this.state.isSolved) {
+            return this.render_solved()
+        } else {
+            return this.render_unsolved()
+        }
+    }
+
+    render_unsolved = () => {
+        console.debug("GameBoardView.render_unsolved")
+        if (this.state.isDrawable) {
+            return (
+                <div>
+
+                    {/*<div style={{marginTop: "40px"}}>*/}
+                    {/*    Font Size: <input type={"number"} onChange={this.changeFontSize} value={this.state.fontSize}/>*/}
+                    {/*    Font Color: <input type={"text"} onChange={this.changeFontColor} value={this.state.fontColor}/>*/}
+                    {/*    Font Family: <input type={"text"} onChange={this.changeFontFamily} value={this.state.fontFamily}/>*/}
+                    {/*    <button onClick={this.drawGameBoard}> Redraw</button>*/}
+                    {/*</div>*/}
+                    <div className={"canvas-elements"}>
+                        <canvas id="draw_overlay" className={"canvas-overlay"}
+
+                        >
+                        </canvas>
+                        <canvas id="submission_overlay" className={"canvas-overlay"}
+                                onMouseDown={this.onCanvasMouseDown}
+                                onMouseUp={this.onCanvasMouseUp}
+                                onMouseMove={this.onMouseOver}>
+                        </canvas>
+                        <canvas id="boardData">
+                        </canvas>
+                    </div>
+                </div>
+            )
+        } else {
+            return (
+                <div> Device width/height is too small to display the board</div>
+            )
+        }
+    }
+
+    render_solved = () => {
+        console.debug("GameBoardView.render_solved")
         return (
-            <div>
-
-                <div style={{marginTop: "40px"}}>
-                    Font Size: <input type={"number"} onChange={this.changeFontSize} value={this.state.fontSize}/>
-                    Font Color: <input type={"text"} onChange={this.changeFillColor} value={this.state.fillColor}/>
-                    Font Family: <input type={"text"} onChange={this.changeFontFamily} value={this.state.fontFamily}/>
-                    <button onClick={this.draw}> Redraw</button>
-                </div>
-                <div className={"canvas-elements"}>
-                    <canvas id="draw_overlay" className={"canvas-overlay"}
-
-                    >
-                    </canvas>
-                    <canvas id="submission_overlay" className={"canvas-overlay"}
-                            onMouseDown={this.onCanvasMouseDown}
-                            onMouseUp={this.onCanvasMouseUp}
-                            onMouseMove={this.onMouseOver}>
-                    </canvas>
-                    <canvas id="boardData">
-                    </canvas>
-                </div>
+            <div onClick={this.closeBoard} style={{padding: "100px"}}>
+                Board is solved bro, you can close board by clicking here
             </div>
         )
     }
+
 }
 

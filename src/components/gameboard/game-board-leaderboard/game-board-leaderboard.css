@@ -1,0 +1,13 @@
+.submission_entries {
+    margin: 10%;
+}
+
+.submission_entry{
+    display: grid;
+    grid-template-columns: 3fr 1fr;
+}
+.submission_by {
+    padding-left: 10px;
+    font-weight: bolder;
+    text-transform: uppercase;
+}

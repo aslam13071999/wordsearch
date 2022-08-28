@@ -20,7 +20,8 @@ export class GameBoard extends Component {
             board_id: null,
             board_data: null,
             board_dictionary: null,
-            board_submissions: []
+            board_submissions: [],
+            is_solved: false
         }
     }
 
@@ -36,7 +37,8 @@ export class GameBoard extends Component {
             have_board: true,
             board_id: response.data.id,
             board_data: response.data.board_data,
-            board_dictionary: response.data.board_dictionary
+            board_dictionary: response.data.board_dictionary,
+            is_solved: response.data.is_solved
         })
     }
 
@@ -47,7 +49,8 @@ export class GameBoard extends Component {
             board_id: null,
             board_dictionary: null,
             board_data: null,
-            board_submissions: []
+            board_submissions: [],
+            is_solved: false
         })
     }
 
@@ -59,35 +62,44 @@ export class GameBoard extends Component {
     getActiveBoardDetails = async () => {
         const board_info_response = await this.room_api.getLatestBoard(this.room_id)
         const board_id = board_info_response.data.id
-        const board_data = board_info_response.data.board_data
-        const board_dictionary = board_info_response.data.board_dictionary
 
         const board_submissions = await this.loadSubmissions(board_id)
+
         if (board_info_response.data.hasOwnProperty('board_data')) {
             this.setState({
                 have_board: true,
                 board_id: board_id,
-                board_data: board_data,
-                board_dictionary: board_dictionary,
-                board_submissions: board_submissions
+                board_data: board_info_response.data.board_data,
+                board_dictionary: board_info_response.data.board_dictionary,
+                board_submissions: board_submissions,
+                is_solved: board_info_response.data.is_solved
             })
         }
-
     }
 
     addSubmission = async (start_cell, end_cell, word) => {
         await this.gameboard_api.makeSubmission(this.state.board_id, start_cell, end_cell, word)
         const board_submissions = [...await this.loadSubmissions(this.state.board_id)];
-        console.log("updated the state",board_submissions);
+        console.log("updated the state", board_submissions);
         this.setState({
             ...this.state,
-            board_submissions:[
+            board_submissions: [
                 ...board_submissions
             ]
         })
-
     }
 
+
+    postSolveCallback = () => {
+        this.setState({
+            have_board: false,
+            board_id: null,
+            board_dictionary: null,
+            board_data: null,
+            board_submissions: [],
+            is_solved: false
+        })
+    }
 
     componentDidMount = async () => {
         await this.getActiveBoardDetails()
@@ -95,34 +107,29 @@ export class GameBoard extends Component {
 
 
     render = () => {
-        console.log("render",this.state);
+        console.log("render", this.state);
         if (this.state.have_board) {
             return (
-                <div className={"game-board-view"}>
-                    <div className="canvas">
+                <div className={"grid sm:grid-cols-1 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-5 "}>
+                    <div className="sm:col-span-1 md:col-span-2 lg:col-span-3 xl:col-span-3 flex justify-center ">
                         <GameBoardView
-                            room_id={this.room_id}
-                            board_id={this.state.board_id}
                             board_data={this.state.board_data}
                             board_dictionary={this.state.board_dictionary}
                             board_submissions={this.state.board_submissions}
                             submission_callback={this.addSubmission}
+                            post_solving_callback={this.postSolveCallback}
+                            is_solved={this.state.is_solved}
                         />
                     </div>
-                    <div className="dictionary">
+                    <div className="col-span-1">
                         <GameBoardDictionary
                             board_dictionary={this.state.board_dictionary}
                             board_submissions={this.state.board_submissions}/>
                     </div>
-                    <div className="submissions">
-                        <GameBoardLeaderboard submissions={this.state.board_submissions}/>
+                    <div className="col-span-1">
+                        <GameBoardLeaderboard board_submissions={this.state.board_submissions}/>
                     </div>
 
-                    <div className="placeholder">
-                        <div onClick={this.deleteBoard}>
-                            Close Game
-                        </div>
-                    </div>
 
 
                 </div>

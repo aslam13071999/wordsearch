@@ -1,24 +1,39 @@
-/** @type {import('tailwindcss').Config} */
-module.exports = {
-  darkMode: 'class',
-  mode: "jit",
-  content: [
-    "./src/**/*.{js,jsx,ts,tsx}",
+/** @type {DefaultColors} */
 
-  ],
-  theme: {
-    colors:{
-      'light':{
-        'primary': '#ffffff',
-        'secondary':'#2e2e2f',
-        'br-color':'#a3a3a3',
-        'lt-gray':'#e5e5e5',
-        'gr-800':'#1f2937',
-        'blue':'#1e40af'
-      }
-      },
-    extend: {
-    }
-  },
-  plugins: []
+
+module.exports = {
+    darkMode: 'class',
+    mode: "jit",
+    content: [
+        "./src/**/*.{js,jsx,ts,tsx}",
+
+    ],
+    theme: {
+
+        extend: {
+            colors: {
+                'light': {
+                    'fg-color': '#000000',
+                    'bg-color': '#ffffff',
+                    'primary': 'rgb(56, 189, 248)',
+                    'secondary': '#37a4a4',
+                },
+                'dark': {
+                    'bg-color': '#000000',
+                    'fg-color': '#ffffff',
+                    'primary': 'rgb(56, 189, 248)',
+                    'secondary': '#37a4a4',
+                }
+            },
+            fontFamily: {
+                'title': 'DynaPuff',
+                'heading': 'roboto',
+                'secondary-heading': 'roboto',
+                'paragraph': 'roboto',
+                'normal': 'roboto',
+                'robo': "'Exo 2'"
+            },
+        }
+    },
+    plugins: []
 }

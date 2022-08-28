@@ -1,10 +1,10 @@
-export class ColorGenerationService {
+export class themeService {
 
     constructor() { // making single instantiation for this class.
-        if (ColorGenerationService._instance) {
-            return ColorGenerationService._instance
+        if (themeService._instance) {
+            return themeService._instance
         }
-        ColorGenerationService._instance = this
+        themeService._instance = this
         this.colorsForUsers = {}
     }
 
@@ -23,5 +23,19 @@ export class ColorGenerationService {
         }
         return this.colorsForUsers[id]
     }
+
+    getBGColor = () => {
+        const html = document.querySelector("html");
+        const st = getComputedStyle(html)
+        return st.backgroundColor
+
+    }
+
+    getFGColor = () => {
+        const html = document.querySelector("html");
+        const st = getComputedStyle(html)
+        return st.color
+    }
+
 
 }

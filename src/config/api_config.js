@@ -1,5 +1,5 @@
 export class ApiConfig {
-    static API_URL = "http://localhost:8000"
+    static API_URL = "http://192.168.0.109:8000"
 
 
     static CATEGORIES_LIST_URL = ApiConfig.API_URL + "/word-search/category/"

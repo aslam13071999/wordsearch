@@ -1,17 +1,15 @@
 import React from "react";
-
-
 import './room-view.css'
-import withRouter from "../../../routerUtil";
+
 import {GameBoard} from "../../gameboard/game-board/game-board";
 import {RoomApi} from "../../../services/room-api";
 
 
-class RoomView extends React.Component {
+export class RoomViewComponent extends React.Component {
 
     constructor(props) {
         super(props)
-        this.room_id = this.props.router.params.id
+        this.room_id = this.props.room_id
         this.room_api = new RoomApi();
     }
 
@@ -40,4 +38,3 @@ class RoomView extends React.Component {
     }
 }
 
-export default withRouter(RoomView)
