@@ -1,6 +1,5 @@
 import React, {Component} from "react";
 import {Link} from "react-router-dom";
-import {RoomApi} from "../../../services/room-api";
 
 
 export default class RoomViewSmall extends Component {
@@ -56,9 +55,8 @@ export default class RoomViewSmall extends Component {
                             <div>RoomID</div>
                             <div>1-672-099</div>
                         </div>
-                        <div className="flex mb-2"><a href="#" className="mr-2">link to join
-
-                        </a>
+                        <div className="flex mb-2">
+                            <a href="#" className="mr-2">link to join </a>
                             <button onClick={(e) => this.oncopy(e)} className="hover:text-light-blue">
                                 {this.state.copied ?
                                     <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20"

@@ -5,7 +5,7 @@ import {ThemeContext} from "../../../App";
 import {themeChangeEventSubscriber} from "../../../services/subscriber";
 
 const Header = (props) => {
-    const context = useContext(ThemeContext);
+    useContext(ThemeContext);
     const themeChangeService = new themeChangeEventSubscriber()
     const [enabled, setEnabled] = useState(false);
     const setThemestate = (val) => {

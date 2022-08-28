@@ -4,23 +4,6 @@ import './index.css';
 import {BrowserRouter} from "react-router-dom";
 import reportWebVitals from './reportWebVitals';
 import App from "./App";
-import { initializeApp } from "firebase/app";
-import { getAnalytics } from "firebase/analytics";
-import { getAuth } from "firebase/auth";
-
-const firebaseConfig = {
-    apiKey: "AIzaSyDEMhLfRopmztGZ-BYpTq1qoqN8ycYhxhM",
-    authDomain: "wordsearch-mp.firebaseapp.com",
-    projectId: "wordsearch-mp",
-    storageBucket: "wordsearch-mp.appspot.com",
-    messagingSenderId: "47371325425",
-    appId: "1:47371325425:web:7c84726abe0be32c063e50",
-    measurementId: "G-WC64DY01DR"
-};
-
-const app = initializeApp(firebaseConfig);
-const analytics = getAnalytics(app);
-const auth = getAuth(app);
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
