@@ -11,6 +11,8 @@ const categories = [
     { id: 4, name: 'Travel'},
     { id: 5, name: 'Movies' },
 ]
+const boardSIze= ['Small','Medium','Large'];
+const difficultyLevl =['Easy','Medium','Hard']
 
 export default class GameBoardCreateView extends React.Component {
     constructor(props) {
@@ -80,9 +82,11 @@ export default class GameBoardCreateView extends React.Component {
                         Board Size:
                     </label>
                     <div className="mt-2">
-                        <button className={`${this.state.board_size == 1 ? 'bg-dark-secondary' : 'bg-transparent'} border-2 border-light-secondary rounded px-2 py-1 mr-2`} onClick={()=>this.changeBoardSize("bs",1)}>Small</button>
-                        <button className={`${this.state.board_size == 2 ? 'bg-dark-secondary' : 'bg-transparent'} border-2 border-light-secondary rounded px-2 py-1 mr-2`} onClick={()=>this.changeBoardSize("bs",2)}>Medium</button>
-                        <button className={`${this.state.board_size == 3 ? 'bg-dark-secondary' : 'bg-transparent'} border-2 border-light-secondary rounded px-2 py-1`} onClick={()=>this.changeBoardSize("bs",3)}>Large</button>
+                        {
+                            boardSIze.map((size,index)=>(
+                                <button className={`${this.state.board_size == index ? 'bg-dark-secondary' : 'bg-transparent'} border-2 border-light-secondary rounded px-2 py-1 mr-2`} onClick={()=>this.changeBoardSize("bs",index)}>{size}</button>
+                            ))
+                        }
                     </div>
 
                 </div>
@@ -91,9 +95,11 @@ export default class GameBoardCreateView extends React.Component {
                         Difficulty Level:
                     </label>
                     <div className="mt-2">
-                        <button className={`${this.state.difficulty == 1 ? 'bg-dark-secondary' : 'bg-transparent'} border-2 border-light-secondary rounded px-2 py-1 mr-2`} onClick={()=>this.changeBoardSize("difficulty",1)}>Easy</button>
-                        <button className={`${this.state.difficulty == 2 ? 'bg-dark-secondary' : 'bg-transparent'} border-2 border-light-secondary rounded px-2 py-1 mr-2`} onClick={()=>this.changeBoardSize("difficulty",2)}>Medium</button>
-                        <button className={`${this.state.difficulty == 3 ? 'bg-dark-secondary' : 'bg-transparent'} border-2 border-light-secondary rounded px-2 py-1`} onClick={()=>this.changeBoardSize("difficulty",3)}>Hard</button>
+                        {
+                            difficultyLevl.map((level,i)=>(
+                                <button className={`${this.state.difficulty == i? 'bg-dark-secondary' : 'bg-transparent'} border-2 border-light-secondary rounded px-2 py-1 mr-2`} onClick={()=>this.changeBoardSize("difficulty",i)}>{level}</button>
+                            ))
+                        }
                     </div>
 
                 </div>
