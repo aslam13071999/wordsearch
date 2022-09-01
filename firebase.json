@@ -12,7 +12,28 @@
     ],
     "rewrites": [
       {
-        "source": "/wordsearch/**",
+        "source": "/word-search/**",
+        "run": {
+          "serviceId": "mpgames",
+          "region": "asia-southeast1"
+        }
+      },
+      {
+        "source": "/users/**",
+        "run": {
+          "serviceId": "mpgames",
+          "region": "asia-southeast1"
+        }
+      },
+      {
+        "source": "/admin/**",
+        "run": {
+          "serviceId": "mpgames",
+          "region": "asia-southeast1"
+        }
+      },
+      {
+        "source": "/api/**",
         "run": {
           "serviceId": "mpgames",
           "region": "asia-southeast1"

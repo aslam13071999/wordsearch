@@ -9,7 +9,6 @@ export class UserServiceApi {
             return UserServiceApi._instance
         }
         UserServiceApi._instance = this
-
     }
 
     getUserDetails = async () => {

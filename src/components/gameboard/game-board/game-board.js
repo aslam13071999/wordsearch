@@ -23,6 +23,7 @@ export class GameBoard extends Component {
             board_submissions: [],
             is_solved: false
         }
+
     }
 
 
@@ -77,6 +78,17 @@ export class GameBoard extends Component {
         }
     }
 
+    refreshSubmissionsRealtime = () => {
+        const board_submissions = [... this.loadSubmissions(this.state.board_id)];
+        console.log("updated the state", board_submissions);
+        this.setState({
+            ...this.state,
+            board_submissions: [
+                ...board_submissions
+            ]
+        })
+    }
+
     addSubmission = async (start_cell, end_cell, word) => {
         await this.gameboard_api.makeSubmission(this.state.board_id, start_cell, end_cell, word)
         const board_submissions = [...await this.loadSubmissions(this.state.board_id)];
@@ -103,6 +115,14 @@ export class GameBoard extends Component {
 
     componentDidMount = async () => {
         await this.getActiveBoardDetails()
+        this.realTimeSubmissionsFetchId = setInterval(this.refreshSubmissionsRealtime, 5000)
+        setTimeout(() => {
+            clearInterval(this.realTimeSubmissionsFetchId)
+        }, 1000 * 60 * 10) // clears after 15min
+    }
+
+    componentWillUnmount() {
+        clearInterval(this.realTimeSubmissionsFetchId)
     }
 
 
@@ -129,8 +149,6 @@ export class GameBoard extends Component {
                     <div className="col-span-1">
                         <GameBoardLeaderboard board_submissions={this.state.board_submissions}/>
                     </div>
-
-
 
                 </div>
             )
