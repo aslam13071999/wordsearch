@@ -40,7 +40,7 @@ export class RoomApi {
 
     deleteRoom = async (roomId) => {
         const headers = await new AuthenticationService().getAuthHeaders()
-        const url = ApiConfig.ROOM_DELETE_URL.format("{roomId}", roomId)
+        const url = ApiConfig.ROOM_DELETE_URL.replace("{roomId}", roomId)
         const response = await axios.delete(url, {headers: headers})
         console.log("RoomApi.deleteRoom response")
         console.log(response)
@@ -51,6 +51,7 @@ export class RoomApi {
         const response = await this.getInfo(roomId)
         const players =  response.data.players
         console.log("RoomApi.getJoinedPlayers response", response)
+        return players
     }
 
 

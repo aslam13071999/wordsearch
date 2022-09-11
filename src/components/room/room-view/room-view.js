@@ -5,6 +5,7 @@ import {GameBoard} from "../../gameboard/game-board/game-board";
 import {RoomApi} from "../../../services/room-api";
 import withRouter from "../../../routerUtil";
 import GameBoardCreateView from "../../gameboard/game-board-create-view/game-board-create-view";
+import {AuthenticationService} from "../../../services/authentication";
 
 
 class RoomView extends React.Component {
@@ -12,16 +13,28 @@ class RoomView extends React.Component {
     constructor(props) {
         super(props)
         this.room_id = this.props.room_id
-        this.room_api = new RoomApi();
+        this.room_api = new RoomApi()
+        this.auth_api = new AuthenticationService()
+
+        this.room_refresh_id = null
         this.state = {
-            have_board: false,
-            board_id: null
+            have_active_board: false,
+            active_board_info: null,
+            room_info: null
         }
     }
 
     checkValidRoom = async () => {
-        const response = this.room_api.getInfo(this.room_id)
-        return response.data !== null
+        try {
+            const response = await this.room_api.getInfo(this.room_id)
+            if (response.data == null) return false;
+            this.setState({
+                ...this.state,
+                room_info: response.data
+            })
+        } catch (e) {
+            return false
+        }
     }
 
 
@@ -29,6 +42,7 @@ class RoomView extends React.Component {
         const status = await this.checkValidRoom()
         if (status === false) {
             this.props.router.navigate("/room/")
+            return
         }
         await this.fetchActiveBoard()
     }
@@ -37,30 +51,55 @@ class RoomView extends React.Component {
         const board_info_response = await this.room_api.getLatestBoard(this.room_id)
         console.log("RoomView.getActiveBoardDetails", board_info_response)
         if (board_info_response.data.hasOwnProperty('id')) {
-            await this.setActiveBoard(board_info_response)
+            if(this.room_refresh_id != null){
+                console.log("clearing interval for fetching active board")
+                clearInterval(this.room_refresh_id)
+                this.room_refresh_id = null
+            }
+            this.setState({
+                have_active_board: true,
+                active_board_info: board_info_response.data
+            })
         }
     }
 
-    setActiveBoard = async (board_info) => {
+
+    onCreate = async () => {
+        await this.fetchActiveBoard()
+    }
+
+    onClose = async () => {
         this.setState({
-            have_board: true,
-            board_info: board_info.data
+            have_active_board: false,
+            active_board_info: null
         })
     }
 
     render() {
-        return (
-            <div className="room">
-                <div className="game-board">
-                    {
-                        this.state.have_board === true && <GameBoard room_id={this.room_id} board_info={this.state.board_info}/>
-                    }
-                    {
-                        this.state.have_board === false && <GameBoardCreateView room_id={this.room_id} />
-                    }
-                </div>
-            </div>
-        )
+        if (this.state.room_info != null) {
+            if(this.state.have_active_board){
+                return(
+                    <GameBoard room_id={this.room_id} board_info={this.state.active_board_info} on_close={this.onClose}/>
+                )
+            }
+            else {
+                if(this.state.room_info.created_by.email === this.auth_api.getUser().email){
+                    return (
+                        <GameBoardCreateView room_id={this.room_id} on_create={this.onCreate}/>
+                    )
+                }
+                else{
+                    this.room_refresh_id = setInterval(this.fetchActiveBoard, 2000)
+                    return (
+                        <div className={"p-8"}>
+                            Please Wait, We are waiting for the Room Creator to start the game
+                        </div>
+                    )
+                }
+            }
+        } else {
+            return (<div> Please Wait </div>)
+        }
     }
 }
 

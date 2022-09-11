@@ -1,4 +1,4 @@
-import {getAuth, signInWithPopup, GoogleAuthProvider} from "firebase/auth";
+import {getAuth, GoogleAuthProvider, signInWithPopup} from "firebase/auth";
 import {initializeApp} from "firebase/app";
 import {getAnalytics} from "firebase/analytics";
 
@@ -13,9 +13,10 @@ const firebaseConfig = {
 };
 
 const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const analytics = getAnalytics(app);
+export const auth = getAuth(app);
+getAnalytics(app);
 const provider = new GoogleAuthProvider();
+
 
 export class AuthenticationService {
 
@@ -24,36 +25,40 @@ export class AuthenticationService {
             return AuthenticationService._instance
         }
         AuthenticationService._instance = this
-        this.access_token = localStorage.getItem('token')
-        this.user = localStorage.getItem('user')
+        this.loadUserInfoFromLocalStorage()
+    }
+
+    loadUserInfoFromLocalStorage = () => {
+        this.user = JSON.parse(localStorage.getItem('user'))
+    }
+
+    saveUserInfoToLocalStorage = (data) => {
+        localStorage.setItem('user', JSON.stringify({
+            display_name: data.user.displayName,
+            email: data.user.email,
+            photoURL: data.user.photoURL
+        }))
     }
 
     authenticate = async () => {
         const result = await signInWithPopup(auth, provider)
-        console.log(result)
-        this.user = result.user
-        this.access_token = this.user.accessToken
-
-        localStorage.setItem('user', this.user)
-        localStorage.setItem('token', this.access_token)
-
-        auth.onAuthStateChanged(async (user) => {
-            this.access_token = await user.getIdToken();
-            localStorage.setItem('token', this.access_token)
-        })
-
-        return this.user
+        this.saveUserInfoToLocalStorage(result)
+        this.loadUserInfoFromLocalStorage()
     }
 
+    signOut = async () => {
+        localStorage.removeItem('user')
+        this.user = null
+        await auth.signOut()
+    }
+
+    getUser = () => {
+        return this.user
+    }
 
     getAccessToken = async () => {
-        if (this.access_token == null) await this.authenticate()
-        return this.access_token
-    }
-
-    getUser = async () => {
-        if (this.user == null) await this.authenticate()
-        return this.user
+        const token = await auth.currentUser.getIdToken()
+        return token
     }
 
     getAuthHeaders = async () => {

@@ -1,7 +1,4 @@
 import {Component} from "react";
-import {initializeApp} from "firebase/app";
-import {getAnalytics} from "firebase/analytics";
-import {getAuth, GoogleAuthProvider, signInWithPopup} from "firebase/auth";
 
 export class UserSignInComponent extends Component {
 

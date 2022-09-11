@@ -1,138 +1,164 @@
-import React from 'react'
+import {Listbox, Transition} from '@headlessui/react';
+import React, {Fragment} from 'react'
 import {CategoryApi} from "../../../services/category-api";
-import {Listbox} from '@headlessui/react';
-
+import Styles from "../../../constants/styles";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {faArrowsUpDown} from "@fortawesome/free-solid-svg-icons";
 import './game-board-create-view.css';
+import {GameBoardApi} from "../../../services/game-board-api";
 
-const categories = [
-    {id: 1, name: 'default'},
-    {id: 2, name: 'Animals'},
-    {id: 3, name: 'Birds'},
-    {id: 4, name: 'Travel'},
-    {id: 5, name: 'Movies'},
-]
+const boardSizes = ['Small', 'Medium', 'Large'];
+const difficultyLevels = ['Easy', 'Medium', 'Hard']
 
-const boardSIze = ['Small', 'Medium', 'Large'];
-const difficultyLevel = ['Easy', 'Medium', 'Hard']
 
 export default class GameBoardCreateView extends React.Component {
     constructor(props) {
         super(props)
 
-        this.category_api = new CategoryApi()
+        this.categoryApi = new CategoryApi()
+        this.gameboardApi = new GameBoardApi()
 
-
+        this.categories = []
         this.state = {
-            board_id: this.props.board_id || null,
-            board_size: this.props.board_size || 2,
-            difficulty_selected: this.props.difficulty_selected || false,
-            difficulty: this.props.difficulty || 2,
-            category_selected: this.props.category_selected || false,
-            category: categories[0],
+            boardSize: this.props.boardSize || "Medium", difficulty: this.props.difficulty || "Medium", category: null
         }
     }
 
-    changeCategory = (event) => {
-        this.setState({
-            category: event
-        })
+    componentDidMount = async () => {
+        await this.loadCategories()
     }
 
-    changeBoardSize = (category, val) => {
-        if (category == "bs") {
 
+    loadCategories = async () => {
+        console.log("GameBoardCreateView.loadCategories loading categories")
+        const response = await this.categoryApi.listCategories()
+        console.log("GameBoardCreateView.loadCategories response", response)
+        this.categories = response.data
+        if (this.categories.length > 0) {
+            console.log("updating state")
             this.setState({
-                board_size: val
-            })
-        } else if (category == "difficulty") {
-            this.setState({
-                difficulty: val
+                ...this.state, category: this.categories[0].name
             })
         }
-
-    }
-
-    changeDifficulty = (category, val) => {
-        this.setState({
-            difficulty: val
-        })
     }
 
 
     createBoard = async () => {
-        const response = await this.gameboard_api.createBoard(
-            this.room_id,
-            this.state.category,
-            this.state.board_size,
-            this.state.difficulty
-        );
-
+        await this.gameboardApi.createBoard(this.props.room_id, this.state.category, this.state.boardSize, this.state.difficulty);
+        this.props.on_create()
     }
 
-    componentDidMount = () => {
+    changeCategory = (category) => {
+        this.setState({
+            ...this.state, category: category
+        })
+    }
 
+    changeBoardSize = (boardSize) => {
+        this.setState({
+            ...this.state, boardSize: boardSize
+        })
+    }
+
+    changeBoardDifficulty = (level) => {
+        this.setState({
+            ...this.state, difficulty: level
+        })
     }
 
 
     render() {
-
         return (
             <div style={{padding: "10px"}}>
-                <div className="mb-4">
-                    <label>
-                        Board Size:
-                    </label>
-                    <div className="mt-2">
-                        {
-                            boardSIze.map((size, index) => (
-                                <button
-                                    className={`${this.state.board_size == index ? 'bg-dark-secondary' : 'bg-transparent'} border-2 border-light-secondary rounded px-2 py-1 mr-2`}
-                                    onClick={() => this.changeBoardSize("bs", index)} key={"size-" + size}>
-                                    {size}
-                                </button>
-                            ))
-                        }
-                    </div>
-
-                </div>
-                <div className="mb-4">
-                    <label>
-                        Difficulty Level:
-                    </label>
-                    <div className="mt-2">
-                        {
-                            difficultyLevel.map((level, i) => (
-                                <button
-                                    className={`${this.state.difficulty == i ? 'bg-dark-secondary' : 'bg-transparent'} border-2 border-light-secondary rounded px-2 py-1 mr-2`}
-                                    onClick={() => this.changeBoardSize("difficulty", i)} key={"difficulty-" + level}>
-                                    {level}
-                                </button>
-                            ))
-                        }
-                    </div>
-
-                </div>
-                <div className="mb-4">
-                    <label className={`mr-4`}>Select Category:</label>
-                    <Listbox value={this.state.category} onChange={this.changeCategory}>
-                        <Listbox.Button>{this.state.category.name}</Listbox.Button>
-                        <Listbox.Options className={`hover:cursor-pointer w-[250px]`}>
-                            {categories.map((catefgory) => (
-                                <Listbox.Option
-                                    key={"category-" + catefgory.id}
-                                    value={catefgory}
-                                    className={`hover:bg-dark-secondary`}
-                                >
-                                    {catefgory.name}
-                                </Listbox.Option>
-                            ))}
-                        </Listbox.Options>
-                    </Listbox>
-                </div>
-                <button className={"bg-light-primary hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"}
+                <div className="mb-4"> {this.renderBoardSize()} </div>
+                <div className="mb-4"> {this.renderBoardDifficulty()} </div>
+                <div className="mb-4"> {this.render_input_category()} </div>
+                <button className={Styles.CLASSES_FOR_OUTLINE_BUTTON + " py-2 px-4"}
                         onClick={this.createBoard}> Create Board
                 </button>
             </div>
         )
     }
+
+
+    renderBoardSize = () => {
+        return (
+            <div>
+                <label> Board Size: </label>
+                <div className="mt-2">
+                    {boardSizes.map((size) => {
+                        let activeClassName = Styles.CLASSES_FOR_OUTLINE_BUTTON + " bg-light-active dark:bg-dark-active "
+                        let nonActiveClassName = Styles.CLASSES_FOR_OUTLINE_BUTTON
+                        return (
+                            <button
+                                className={(size === this.state.boardSize ? activeClassName : nonActiveClassName) + " px-2 py-1 mr-2"}
+                                onClick={() => this.changeBoardSize(size)} key={"bs-" + size}>
+                                {size}
+                            </button>
+                        )
+                    })}
+                </div>
+            </div>
+        )
+    }
+
+    renderBoardDifficulty = () => {
+        return (
+            <div>
+                <label> Difficulty Level: </label>
+                <div className="mt-2">
+                    {difficultyLevels.map((level) => {
+                        let activeClassName = Styles.CLASSES_FOR_OUTLINE_BUTTON + " bg-light-primary dark:bg-dark-primary "
+                        let nonActiveClassName = Styles.CLASSES_FOR_OUTLINE_BUTTON
+
+                        return (
+                            <button
+                                className={(level === this.state.difficulty ? activeClassName : nonActiveClassName) + " px-2 py-1 mr-2"}
+                                onClick={() => this.changeBoardDifficulty(level)} key={"d-" + level}>
+                                {level}
+                            </button>
+                        )
+                    })}
+                </div>
+            </div>
+        )
+    };
+
+
+    render_input_category = () => {
+        const dropDownIconStyle = "pointer-events-none absolute inset-y-0 right-0 ml-3 flex items-center pr-2"
+        const optionsStyle = "absolute max-h-56 w-64 overflow-auto py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none bg-light-bg-color dark:bg-dark-bg-color shadow-light-shadow-color dark:shadow-dark-shadow-color"
+        const optionStyle = "p-1 px-2 select-none "
+        const activeOptionStyle = "relative bg-light-primary dark:bg-dark-primary " + optionStyle
+        const inActiveOptionStyle = " " + optionStyle
+
+
+        return (
+            <div>
+                <label> Category: </label>
+                <Listbox value={this.state.category} onChange={this.changeCategory}>
+                    {({open}) => (
+                        <div className="relative mt-1">
+                            <Listbox.Button className={Styles.CLASSES_FOR_OUTLINE_BUTTON + " relative rounded-md w-64 cursor-pointer p-1"}>
+                                <span className="flex items-center"> {this.state.category} </span>
+                                <span className={dropDownIconStyle}> <FontAwesomeIcon icon={faArrowsUpDown}/> </span>
+                            </Listbox.Button>
+                            <Transition show={open} as={Fragment} leave="transition ease-in duration-100" leaveFrom="opacity-100" leaveTo="opacity-0">
+                                <Listbox.Options className={optionsStyle}>
+                                    {this.categories.map((category) => {
+                                        return (
+                                            <Listbox.Option className={({active}) => active ? activeOptionStyle : inActiveOptionStyle} key={"c-" + category.name} value={category.name} disabled={false}>
+                                                {category.name}
+                                            </Listbox.Option>
+                                        )
+                                    })}
+                                </Listbox.Options>
+                            </Transition>
+                        </div>
+                    )}
+                </Listbox>
+            </div>
+        )
+    }
+
 }

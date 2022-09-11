@@ -2,6 +2,7 @@ import {Component} from "react";
 import './game-board-view.css'
 import {themeService} from "../../../services/theme";
 import {themeChangeEventSubscriber} from "../../../services/subscriber";
+import {AuthenticationService} from "../../../services/authentication";
 
 
 export default class GameBoardView extends Component {
@@ -149,7 +150,7 @@ export default class GameBoardView extends Component {
 
     drawEverything = () => {
         console.debug("GameBoardView.drawEverything")
-        if(this.state.isDrawable && !this.state.isSolved){
+        if (this.state.isDrawable && !this.state.isSolved) {
             this.setBoardContext()
             this.setSubmissionsOverlayContext()
             this.setDrawOverlayContext()
@@ -320,6 +321,7 @@ export default class GameBoardView extends Component {
     drawSubmissions = () => {
         console.debug("GameBoardView.drawSubmissions")
         this.boardSubmissions.forEach((submission) => {
+            console.log("color for submission ", submission.submission_by.id, this.color_service.getColorForUser(submission.submission_by.id))
             this.drawLineBetweenCells(
                 this.submission_overlay,
                 {
@@ -330,7 +332,7 @@ export default class GameBoardView extends Component {
                     row: submission.submission_data['row2'],
                     column: submission.submission_data['column2'],
                 },
-                this.color_service.getColorForUser(submission.submission_by.username)
+                this.color_service.getColorForUser(submission.submission_by.id)
             )
         })
     }
@@ -413,7 +415,8 @@ export default class GameBoardView extends Component {
         if (this.state.selectionMode !== "drag") {
             if (this.start_cell == null) {
                 this.start_cell = current_cell
-                this.highlightCell(current_cell, this.color_service.getColorForUser("asif"), this.draw_overlay)
+                this.highlightCell(current_cell,
+                    this.color_service.getColorForUser( new AuthenticationService().getUser().id), this.draw_overlay)
                 return
             }
         }
@@ -434,6 +437,8 @@ export default class GameBoardView extends Component {
             console.debug("Invalid word", selected_word)
             return
         }
+        this.drawLineBetweenCells(this.submission_overlay, start_cell, current_cell,
+            this.color_service.getColorForUser( new AuthenticationService().getUser().id))
         await this.addSubmission(start_cell, current_cell, selected_word)
 
     }
@@ -467,7 +472,7 @@ export default class GameBoardView extends Component {
         this.drawLineBetweenCells(
             this.draw_overlay,
             this.start_cell, current_cell,
-            this.color_service.getColorForUser("asif"))
+            this.color_service.getColorForUser(new AuthenticationService().getUser().id))
         this.last_mouse_over_cell = current_cell
     }
     onTouchStart = (e) => {

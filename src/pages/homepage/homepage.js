@@ -12,8 +12,7 @@ class HomePage extends React.Component {
                     <div className={"grid grid-cols-1"}>
                         <div className="text-2xl link-hover mb-5 w-full text-center"><Link to={"/room"}> Rooms </Link>
                         </div>
-                        <div className="text-2xl link-hover w-full text-center"><Link
-                            to={"/categories"}> Categories </Link></div>
+
                     </div>
                 </div>
             </div>

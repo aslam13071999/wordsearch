@@ -14,16 +14,18 @@ export class GameBoardLeaderboard extends Component {
         console.log("GameBoardLeaderboard.calculateSubmissionsByUser")
         let solved_count = {}
         this.props.board_submissions.forEach((submission) => {
-            console.log("calculateSubmissionsByUser", submission)
-            const username = submission.submission_by.username
-            if (solved_count.hasOwnProperty(username) === false) {
-                solved_count[username] = 0
+            const display_name = submission.submission_by.display_name
+            if (solved_count.hasOwnProperty(display_name) === false) {
+                solved_count[display_name] = 0
             }
-            solved_count[username] += 1
+            solved_count[display_name] += 1
         })
         console.log("calculateSubmissionsByUser", solved_count)
         let data = []
         for (let key in solved_count) data.push({user: key, solved_count: solved_count[key]})
+        data.sort((a, b) => {
+            return a.solved_count !== b.solved_count ? a.solved_count < b.solved_count : a.user > b.user
+        })
         return data
     }
 
@@ -41,11 +43,7 @@ export class GameBoardLeaderboard extends Component {
         console.log("GameBoardLeaderboard.render")
         return (
             <div>
-                <div className={"text-center font-semibold " +
-                    " py-1" +
-                    " md:mt-2 lg:mt-6 " +
-                    " sm:mx-1 md:mx-3 lg:mx-12" +
-                    " border-2 border-gray dark:border-dark-primary"}>
+                <div className={"text-center font-semibold  py-1 md:mt-2 lg:mt-6  sm:mx-1 md:mx-3 lg:mx-12 border-2 border-gray dark:border-dark-primary"}>
                     Submissions
                 </div>
                 <div className={"grid grid-cols-1 lg:mx-5 my-2 lg:p-4"}>
@@ -59,7 +57,7 @@ export class GameBoardLeaderboard extends Component {
                                         {submission.user}
                                     </div>
                                     <div
-                                        className={"float-right align-middle mg:mx-1 lg:mx-3 px-2  rounded-md border-gray-600  font-robo  "}>
+                                        className={"float-right align-middle mg:mx-1 lg:mr-3 pr-2  rounded-md border-gray-600  font-robo  "}>
                                         {submission.solved_count} point{submission.solved_count > 1 ? 's' : ''}
                                     </div>
                                 </div>
@@ -67,8 +65,6 @@ export class GameBoardLeaderboard extends Component {
                         })
 
                     }
-
-
                 </div>
             </div>
         )
