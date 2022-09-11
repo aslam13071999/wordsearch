@@ -6,7 +6,7 @@ import axios from "axios";
 export class GameBoardApi {
 
     createBoard = async (roomId, category, board_size, difficulty) => {
-        const url = ApiConfig.GAME_BOARD_CREATE_URL
+        const url = ApiConfig.WORSEARCH_BOARD_CREATE_URL
         const headers = await new AuthenticationService().getAuthHeaders()
         const response = await axios.post(url,
             {
@@ -24,7 +24,7 @@ export class GameBoardApi {
 
 
     deleteGameBoard = async (boardId) => {
-        const url = ApiConfig.GAME_BOARD_DELETE_URL.replace("{boardId}", boardId)
+        const url = ApiConfig.WORSEARCH_BOARD_DELETE_URL.replace("{boardId}", boardId)
         const headers = await new AuthenticationService().getAuthHeaders()
         const response = await axios.delete(url, {headers: headers})
         console.log("GameBoardApi.deleteGameBoard response", response)
@@ -33,7 +33,7 @@ export class GameBoardApi {
 
 
     getSubmissions = async (boardId) => {
-        const url = ApiConfig.GAME_BOARD_SUBMISSIONS_URL.replace("{boardId}", boardId)
+        const url = ApiConfig.WORSEARCH_BOARD_SUBMISSIONS_URL.replace("{boardId}", boardId)
         const headers = await new AuthenticationService().getAuthHeaders()
         const response = await axios.get(url, {headers: headers})
         console.log("GameBoardApi.getSubmissions response", response)
@@ -41,7 +41,7 @@ export class GameBoardApi {
     }
 
     makeSubmission = async (boardId, start_cell, end_cell, word) => {
-        const url = ApiConfig.GAME_BOARD_MAKE_SUBMISSIONS_URL.replace("{boardId}", boardId)
+        const url = ApiConfig.WORSEARCH_BOARD_MAKE_SUBMISSIONS_URL.replace("{boardId}", boardId)
         const headers = await new AuthenticationService().getAuthHeaders()
         const payload = {
             "word": word,

@@ -25,8 +25,7 @@ export class RoomApi {
         const url = ApiConfig.ROOM_INFO_URL.replace("{roomId}", roomId)
         const headers = await new AuthenticationService().getAuthHeaders()
         const response = await axios.get(url, {headers: headers})
-        console.log("RoomApi.getInfo response")
-        console.log(response)
+        console.log("RoomApi.getInfo response", response)
         return response
     }
 
@@ -49,12 +48,9 @@ export class RoomApi {
     }
 
     getJoinedPlayers = async (roomId) => {
-        const url = ApiConfig.ROOM_JOINED_USERS_URL.replace("{roomId}", roomId)
-        const headers = await new AuthenticationService().getAuthHeaders()
-        const response = await axios.get(url, {headers: headers})
-        console.log("RoomApi.getJoinedPlayers response")
-        console.log(response)
-        return response
+        const response = await this.getInfo(roomId)
+        const players =  response.data.players
+        console.log("RoomApi.getJoinedPlayers response", response)
     }
 
 

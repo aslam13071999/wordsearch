@@ -1,55 +1,65 @@
-import axios from "axios";
-import {ApiConfig} from "../config/api_config";
+import {getAuth, signInWithPopup, GoogleAuthProvider} from "firebase/auth";
+import {initializeApp} from "firebase/app";
+import {getAnalytics} from "firebase/analytics";
+
+const firebaseConfig = {
+    apiKey: "AIzaSyDEMhLfRopmztGZ-BYpTq1qoqN8ycYhxhM",
+    authDomain: "wordsearch-mp.firebaseapp.com",
+    projectId: "wordsearch-mp",
+    storageBucket: "wordsearch-mp.appspot.com",
+    messagingSenderId: "47371325425",
+    appId: "1:47371325425:web:7c84726abe0be32c063e50",
+    measurementId: "G-WC64DY01DR"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const analytics = getAnalytics(app);
+const provider = new GoogleAuthProvider();
 
 export class AuthenticationService {
 
-    constructor() { // making single instantiation for this class.
-        if(AuthenticationService._instance){
+    constructor() {
+        if (AuthenticationService._instance) {
             return AuthenticationService._instance
         }
         AuthenticationService._instance = this
-        this.access_token = null
-        this.refresh_token = null
-        this.last_refresh_at = null
+        this.access_token = localStorage.getItem('token')
+        this.user = localStorage.getItem('user')
     }
 
-    authenticate = async (username, password) => {
-        const url = ApiConfig.API_URL + "/api/token/"
-        const response = await axios.post(url,
-            {'username': username, 'password': password}
-        )
-        console.log("AuthenticationService.authenticate response", response)
-        this.access_token = response.data['access']
-        this.refresh_token = response.data['refresh']
-        this.last_refresh_at = Date.now()
+    authenticate = async () => {
+        const result = await signInWithPopup(auth, provider)
+        console.log(result)
+        this.user = result.user
+        this.access_token = this.user.accessToken
+
+        localStorage.setItem('user', this.user)
+        localStorage.setItem('token', this.access_token)
+
+        auth.onAuthStateChanged(async (user) => {
+            this.access_token = await user.getIdToken();
+            localStorage.setItem('token', this.access_token)
+        })
+
+        return this.user
     }
 
-    refreshAccessToken = async () => {
-        const url = ApiConfig.API_URL + "/api/token/refresh/"
-        const response = await axios.post(url, {'refresh': this.refresh_token})
-        console.log("AuthenticationService.refreshAccessToken response", response)
-        this.access_token = response.data.access
-        this.last_refresh_at = Date.now()
-
-    }
 
     getAccessToken = async () => {
-        if (this.access_token == null){
-            await this.authenticate('asif', 'rgukt123')
-        }
-        const current_time = Date.now()
-        const next_refresh = this.last_refresh_at + (5 * 60 * 1000)
-        if (next_refresh <= current_time) {
-            console.log("token is expired, refreshing")
-            await this.refreshAccessToken()
-        }
+        if (this.access_token == null) await this.authenticate()
         return this.access_token
+    }
+
+    getUser = async () => {
+        if (this.user == null) await this.authenticate()
+        return this.user
     }
 
     getAuthHeaders = async () => {
         const access_token = await this.getAccessToken()
         return {
-            "Authorization": "Bearer " + access_token,
+            "Authorization": "Token " + access_token,
         }
     }
 }

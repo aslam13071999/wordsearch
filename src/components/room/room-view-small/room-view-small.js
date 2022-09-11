@@ -1,5 +1,6 @@
 import React, {Component} from "react";
 import {Link} from "react-router-dom";
+import moment from "moment";
 
 
 export default class RoomViewSmall extends Component {
@@ -30,34 +31,36 @@ export default class RoomViewSmall extends Component {
                 bg-light-bg-color dark:bg-dark-bg-color
                 rounded-md border-t-4 border shadow-lg
                 border-gray-200 dark:border-gray-800
-                hover:shadow-gray-200 ">
+                hover:shadow-light-primary ">
                 <div className="pt-3 px-4">
                     <div className="text-right opacity-[0.5] hover:opacity-[1] inline-block cursor-pointer">
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20"
-                             fill="currentColor">
-                            <path fillRule="evenodd"
-                                  d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z"
-                                  clipRule="evenodd"/>
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                            <path fillRule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clipRule="evenodd"/>
                         </svg>
                     </div>
                     <div className=''>
                         <div className='flex justify-between my-2 items-center'>
-                            <div>Team Players</div>
+                            <div>No of Players</div>
                             <div
                                 className='bg-light-primary text-light-fg-color rounded-full w-8 h-8 flex items-center justify-center'>
-                                <p>4</p></div>
+                                <p>{this.props.room_info.players.length}</p>
+                            </div>
                         </div>
                         <div className='flex justify-between mb-2'>
                             <div>Created At</div>
-                            <div>3-08-2322</div>
+                            <div>{moment(this.props.room_info.created_at).format('DD-MM-YYYY HH:mm A')}</div>
+                        </div>
+                        <div className='flex justify-between mb-2'>
+                            <div>Created By</div>
+                            <div>{this.props.room_info.created_by.display_name}</div>
                         </div>
                         <div className='flex justify-between mb-2'>
                             <div>RoomID</div>
-                            <div>1-672-099</div>
+                            <div>{this.props.room_info.id}</div>
                         </div>
                         <div className="flex mb-2">
                             <a href={"/room/"} className="mr-2">link to join </a>
-                            <button onClick={(e) => this.oncopy(e)} className="hover:text-light-blue">
+                            <button onClick={this.oncopy} className="hover:text-light-blue">
                                 {this.state.copied ?
                                     <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20"
                                          fill="currentColor">
@@ -79,7 +82,7 @@ export default class RoomViewSmall extends Component {
                     </div>
                 </div>
 
-                <Link to={"/room/" + this.props.room_id}>
+                <Link to={"/room/" + this.props.room_info.id}>
                     <div
                         className="absolute bottom-0 text-center w-full
                     bg-light-primary text-light-bg-color

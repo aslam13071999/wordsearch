@@ -46,7 +46,7 @@ class RoomListView extends Component {
                     {
                         this.state.rooms !== null && this.state.rooms.map((room_data,roomNum) => {
                             return(
-                                <RoomViewSmall players={room_data.players} room_id={room_data.id} key={"room" + room_data.id} roomNum={roomNum+1}/>
+                                <RoomViewSmall room_info={room_data} key={"room" + room_data.id} roomNum={roomNum+1}/>
                             )
                         })
                     }

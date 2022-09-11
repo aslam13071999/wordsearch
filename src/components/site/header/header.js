@@ -3,6 +3,7 @@ import React from "react";
 import {useState, useContext} from 'react'
 import {ThemeContext} from "../../../App";
 import {themeChangeEventSubscriber} from "../../../services/subscriber";
+import {AuthenticationService} from "../../../services/authentication";
 
 const Header = (props) => {
     useContext(ThemeContext);
@@ -44,6 +45,7 @@ const Header = (props) => {
                 </Link>
             </div>
             <div className="flex flex-row-reverse gap-6 font-bold justify-between">
+                <button onClick={new AuthenticationService().authenticate} > Sign In </button>
 
                 <button onClick={() => setThemestate(!enabled)}>
                     {

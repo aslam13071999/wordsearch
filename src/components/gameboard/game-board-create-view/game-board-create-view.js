@@ -1,18 +1,19 @@
 import React from 'react'
 import {CategoryApi} from "../../../services/category-api";
-import { Listbox } from '@headlessui/react';
+import {Listbox} from '@headlessui/react';
 
 import './game-board-create-view.css';
 
 const categories = [
-    { id: 1, name: 'default'},
-    { id: 2, name: 'Animals' },
-    { id: 3, name: 'Birds'},
-    { id: 4, name: 'Travel'},
-    { id: 5, name: 'Movies' },
+    {id: 1, name: 'default'},
+    {id: 2, name: 'Animals'},
+    {id: 3, name: 'Birds'},
+    {id: 4, name: 'Travel'},
+    {id: 5, name: 'Movies'},
 ]
-const boardSIze= ['Small','Medium','Large'];
-const difficultyLevl =['Easy','Medium','Hard']
+
+const boardSIze = ['Small', 'Medium', 'Large'];
+const difficultyLevel = ['Easy', 'Medium', 'Hard']
 
 export default class GameBoardCreateView extends React.Component {
     constructor(props) {
@@ -37,14 +38,13 @@ export default class GameBoardCreateView extends React.Component {
         })
     }
 
-    changeBoardSize = (category,val) => {
-        if(category == "bs"){
+    changeBoardSize = (category, val) => {
+        if (category == "bs") {
 
             this.setState({
                 board_size: val
             })
-        }
-        else if(category == "difficulty"){
+        } else if (category == "difficulty") {
             this.setState({
                 difficulty: val
             })
@@ -52,7 +52,7 @@ export default class GameBoardCreateView extends React.Component {
 
     }
 
-    changeDifficulty = (category,val) => {
+    changeDifficulty = (category, val) => {
         this.setState({
             difficulty: val
         })
@@ -60,12 +60,13 @@ export default class GameBoardCreateView extends React.Component {
 
 
     createBoard = async () => {
-        //TODO: needs to validation here
-        this.props.create_board(
+        const response = await this.gameboard_api.createBoard(
+            this.room_id,
             this.state.category,
             this.state.board_size,
             this.state.difficulty
-        )
+        );
+
     }
 
     componentDidMount = () => {
@@ -83,8 +84,12 @@ export default class GameBoardCreateView extends React.Component {
                     </label>
                     <div className="mt-2">
                         {
-                            boardSIze.map((size,index)=>(
-                                <button className={`${this.state.board_size == index ? 'bg-dark-secondary' : 'bg-transparent'} border-2 border-light-secondary rounded px-2 py-1 mr-2`} onClick={()=>this.changeBoardSize("bs",index)}>{size}</button>
+                            boardSIze.map((size, index) => (
+                                <button
+                                    className={`${this.state.board_size == index ? 'bg-dark-secondary' : 'bg-transparent'} border-2 border-light-secondary rounded px-2 py-1 mr-2`}
+                                    onClick={() => this.changeBoardSize("bs", index)} key={"size-" + size}>
+                                    {size}
+                                </button>
                             ))
                         }
                     </div>
@@ -96,8 +101,12 @@ export default class GameBoardCreateView extends React.Component {
                     </label>
                     <div className="mt-2">
                         {
-                            difficultyLevl.map((level,i)=>(
-                                <button className={`${this.state.difficulty == i? 'bg-dark-secondary' : 'bg-transparent'} border-2 border-light-secondary rounded px-2 py-1 mr-2`} onClick={()=>this.changeBoardSize("difficulty",i)}>{level}</button>
+                            difficultyLevel.map((level, i) => (
+                                <button
+                                    className={`${this.state.difficulty == i ? 'bg-dark-secondary' : 'bg-transparent'} border-2 border-light-secondary rounded px-2 py-1 mr-2`}
+                                    onClick={() => this.changeBoardSize("difficulty", i)} key={"difficulty-" + level}>
+                                    {level}
+                                </button>
                             ))
                         }
                     </div>
@@ -110,7 +119,7 @@ export default class GameBoardCreateView extends React.Component {
                         <Listbox.Options className={`hover:cursor-pointer w-[250px]`}>
                             {categories.map((catefgory) => (
                                 <Listbox.Option
-                                    key={catefgory.id}
+                                    key={"category-" + catefgory.id}
                                     value={catefgory}
                                     className={`hover:bg-dark-secondary`}
                                 >

@@ -4,22 +4,20 @@ import React, {Component} from "react";
 import {GameBoardApi} from "../../../services/game-board-api";
 import {GameBoardDictionary} from "../game-board-dictionary/game-board-dictionary";
 import {GameBoardLeaderboard} from "../game-board-leaderboard/game-board-leaderboard";
-import {RoomApi} from "../../../services/room-api";
 
 
 export class GameBoard extends Component {
 
     constructor(props) {
         super(props);
+
         this.gameboard_api = new GameBoardApi()
-        this.room_api = new RoomApi()
         this.room_id = this.props.room_id
+        this.board_id = this.props.board_info.id
+        this.board_data = this.props.board_data
+        this.board_dictionary = this.props.board_dictionary
 
         this.state = {
-            have_board: false,
-            board_id: null,
-            board_data: null,
-            board_dictionary: null,
             board_submissions: [],
             is_solved: false
         }
@@ -27,21 +25,7 @@ export class GameBoard extends Component {
     }
 
 
-    createBoard = async (category, board_size, difficulty) => {
-        const response = await this.gameboard_api.createBoard(
-            this.room_id,
-            category,
-            board_size,
-            difficulty
-        );
-        this.setState({
-            have_board: true,
-            board_id: response.data.id,
-            board_data: response.data.board_data,
-            board_dictionary: response.data.board_dictionary,
-            is_solved: response.data.is_solved
-        })
-    }
+
 
     deleteBoard = async () => {
         await this.gameboard_api.deleteGameBoard(this.state.board_id);
@@ -60,23 +44,7 @@ export class GameBoard extends Component {
         return board_submissions_response.data
     }
 
-    getActiveBoardDetails = async () => {
-        const board_info_response = await this.room_api.getLatestBoard(this.room_id)
-        const board_id = board_info_response.data.id
 
-        const board_submissions = await this.loadSubmissions(board_id)
-
-        if (board_info_response.data.hasOwnProperty('board_data')) {
-            this.setState({
-                have_board: true,
-                board_id: board_id,
-                board_data: board_info_response.data.board_data,
-                board_dictionary: board_info_response.data.board_dictionary,
-                board_submissions: board_submissions,
-                is_solved: board_info_response.data.is_solved
-            })
-        }
-    }
 
     refreshSubmissionsRealtime = () => {
         const board_submissions = [... this.loadSubmissions(this.state.board_id)];
@@ -127,7 +95,6 @@ export class GameBoard extends Component {
 
 
     render = () => {
-        console.log("render", this.state);
         if (this.state.have_board) {
             return (
                 <div className={"grid sm:grid-cols-1 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-5 "}>
@@ -153,8 +120,6 @@ export class GameBoard extends Component {
                 </div>
             )
         }
-        return (
-            <GameBoardCreateView room_id={this.room_id} create_board={this.createBoard}/>
-        )
+
     }
 }
